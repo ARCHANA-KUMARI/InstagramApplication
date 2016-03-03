@@ -6,7 +6,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,13 +16,12 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ImageButton;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.NoOfCommentInterface;
 import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
+import com.robosoft.archana.instagramapplication.Interfaces.SendHashMap;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.AccessToken;
 import com.robosoft.archana.instagramapplication.Modal.AuthWebClient;
@@ -31,27 +29,32 @@ import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.Constatns;
 import com.robosoft.archana.instagramapplication.Modal.Followers;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
-import com.robosoft.archana.instagramapplication.Modal.RequestToken;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsynTaskUserInformation;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskAccessToken;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskComment;
+import com.robosoft.archana.instagramapplication.Network.AsyncTaskCommentListHash;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskGetRecentMedia;
 import com.robosoft.archana.instagramapplication.Util.NetworkStatus;
 import com.robosoft.archana.instagramapplication.adapter.RecyclerViewAdapter;
 import com.robosoft.archana.instagramapplication.fragment.SettingFragment;
-import com.robosoft.archana.instagramapplication.fragment.TestFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,SendCommentDetails,NoOfCommentInterface {
+public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,SendCommentDetails,NoOfCommentInterface,SendHashMap {
 
-  //  private List<AccessToken> mUserPersonalList = new ArrayList<>();
+
     private List<UserDetail> mUserDetailList = new ArrayList<>();
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
     private List<CommentDetails> mCommentsDetailsList = new ArrayList<>();
+    private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
     private WebView mWebview;
     private RecyclerView mRecycler;
     final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -59,12 +62,9 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     final int cacheSize = maxMemory / 8;
     private LruCache<String, Bitmap> mLrucCach = new LruCache<>(cacheSize);
     private  AsyncTaskAccessToken mAsyncTaskAccessToken;
-  //  private AuthWebClient mAuth = new AuthWebClient();
-    String request_token;
-    private String mUserDetailsUrl;
     private Toolbar mToolbar;
-    RequestToken requestToken = new RequestToken();
     private CoordinatorLayout mCoordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setSupportActionBar(mToolbar);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
         mWebview = (WebView) findViewById(R.id.webview);
-
         if(NetworkStatus.isNetworkAvailable(this)){
             mWebview.loadUrl("https://www.instagram.com/accounts/login/?force_classic_login");
             mWebview.setVerticalScrollBarEnabled(false);
@@ -84,9 +83,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         }
         else{
              setSnackBar();
-
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setOnClickListener(new View.OnClickListener() {
+             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     setSnackBar();
@@ -98,8 +96,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
 
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -148,18 +144,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             followers.setmFollowsUserName(access.getmUserName());
             mFollwersDetailsList.add(followers);
         }
-        String userRecentLikeUrl =  Constatns.APIURL + "/users/"+ id +"/media/recent/?access_token=" + accessToken;
+
         String followersUrl  = "https://api.instagram.com/v1/users/self/follows?access_token="+accessToken;
-
-        String recentMediaLike = "https://api.instagram.com/v1/users/2972956137/media/recent/?access_token=2972956137.289b08f.4518b8e436fd444195fdf1d47745a3c5";
-            //String urlString = Constatns.APIURL + "/users/"+ id +"/media/recent/?access_token=" + accessToken;
-    //     https://api.instagram.com/v1/users/self/media/recent/?access_token=ACCESS-TOKEN
-        //    String urlString = new String("https://api.instagram.com/v1/users/self/media/recent/?access_token=ACCESS-TOKEN");
-         //   String urlString = Constatns.APIURL + "/users/self/media/recent/?access_token="+accessToken;
-
-
-            AsynTaskUserInformation asynTaskUserInformation = new AsynTaskUserInformation(this,mUserDetailList,mFollwersDetailsList,followersUrl);
-            asynTaskUserInformation.execute();
+        AsynTaskUserInformation asynTaskUserInformation = new AsynTaskUserInformation(this,mUserDetailList,mFollwersDetailsList,followersUrl);
+        asynTaskUserInformation.execute();
 
 
 
@@ -194,24 +182,50 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         AsyncTaskComment asyncTaskComment = new AsyncTaskComment(this,mCommentsDetailsList,commnetsUrl);
         asyncTaskComment.execute();
 
+        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,mCommentsDetailsList,commnetsUrl,mMediaList, mHashMapCommentsDetails);
+        asyncTaskCommentListHash.execute();
+
     }
 
     @Override
     public void sendComment(List<CommentDetails> commentDetailsList) {
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mFollwersDetailsList,mMedeiaDetailsList,mCommentsDetailsList);
+        mCommentsDetailsList = commentDetailsList;
+       /* RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mFollwersDetailsList,mMedeiaDetailsList,mCommentsDetailsList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
-        mRecycler.setAdapter(recyclerViewAdapter);
+        mRecycler.setAdapter(recyclerViewAdapter);*/
     }
 
 
     @Override
     public void onClick(int noOfComments) {
         Log.i("Hello","No of comment is "+noOfComments);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mFollwersDetailsList,mMedeiaDetailsList,mCommentsDetailsList,noOfComments);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,noOfComments,mHashMapCommentsDetails);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecycler.setLayoutManager(linearLayoutManager);
+        mRecycler.setAdapter(recyclerViewAdapter);
+    }
+
+    @Override
+    public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
+        mHashMapCommentsDetails = mList;
+     /*   Set keys = mList.entrySet();
+      Log.i("Hello", "Keys are" + keys);
+        Iterator<CommentDetails> iterator = keys.iterator();
+        while (iterator.hasNext()){
+            Map.Entry pairs = (Map.Entry) iterator.next();
+            String keyname = (String) pairs.getKey();
+            Log.i("Hello", "Key Name is" + keyname);
+            ArrayList<CommentDetails> arrayList = (ArrayList<CommentDetails>) pairs.getValue();
+            Log.i("Hello","Arrrrrrrrr size"+arrayList.size());
+            for(int i = 0;i<arrayList.size();i++){
+                CommentDetails commentDetails = arrayList.get(i);
+                Log.i("Hello","Who COmmented ?"+commentDetails.getmWhoCommented()+"And Comment is"+commentDetails.getmCommentText());
+            }
+        }*/
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
         mRecycler.setAdapter(recyclerViewAdapter);
     }
 }
-// https://api.instagram.com/v1/users/self/media/recent/?access_token=2972956137.289b08f.4518b8e436fd444195fdf1d47745a3c5

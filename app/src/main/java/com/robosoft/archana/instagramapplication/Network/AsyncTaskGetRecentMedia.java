@@ -129,7 +129,3 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void,Void,List<MediaDetai
         sendMediaDetails.sendMediaId(mediaDetailses,mSizeOfId);
     }
 }
-
-/*
- String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId;
- */

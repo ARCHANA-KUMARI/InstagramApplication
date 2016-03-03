@@ -47,11 +47,9 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
 
     @Override
     protected List<AccessToken> doInBackground(Void... params) {
-       Log.i("Hello","I am in AsynTaskAccessToken");
-        Log.i("Hello","I am doInBackground");
+
        try
         {   URL url = new URL(Constatns.tokenURLString);
-            Log.i("Hello","Token Url is"+url);
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
             httpsURLConnection.setDoInput(true);

@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -31,6 +33,7 @@ public class AsyncTaskComment extends AsyncTask<Void,Void,List<CommentDetails>> 
     private Context mContext;
     private List<CommentDetails> mCommnetList;
     private String mUrl[];
+
     SendCommentDetails sendComment;
 
     public AsyncTaskComment(Context mContext, List<CommentDetails> mCommnetList,String url[]) {
@@ -42,26 +45,14 @@ public class AsyncTaskComment extends AsyncTask<Void,Void,List<CommentDetails>> 
 
     @Override
     protected List<CommentDetails> doInBackground(Void... params) {
-      //  Log.i("Hello","Length of Idddddddddddd is"+mUrl.length);
 
         for(int i = 0;i<mUrl.length;i++){
             try {
-             //   Log.i("Hello","&&&&&&&&&&&&&&&&&&&&****************************Outer Loop is****************"+i);
+
                 URL urlComment = new URL(mUrl[i]);
-        //  Log.i("Hello","Url is"+i+urlComment);
+
                 HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
                 InputStream inputStream = httpurlConnection.getInputStream();
-               /* httpurlConnection.setRequestMethod("POST");
-                httpurlConnection.setDoInput(true);
-                httpurlConnection.setDoOutput(true);
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpurlConnection.getOutputStream());
-
-                outputStreamWriter.write("client_id=" + Constatns.CLIENT_ID +
-                        "&client_secret=" + Constatns.CLIENT_SECRET +
-                        "&grant_type=authorization_code" +
-                        "&redirect_uri=" + Constatns.CALLBACK_URL +
-                        "&code=" + mRequestToken);
-                outputStreamWriter.flush();*/
                 String response = InputStreamtoString.readStream(inputStream);
               //  Log.i("Hello","Response is"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
