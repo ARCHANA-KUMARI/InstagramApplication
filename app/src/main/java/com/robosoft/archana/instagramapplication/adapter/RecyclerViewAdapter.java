@@ -96,15 +96,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         CommentDetails commentDetails = mCommentsDetailsList.get(viewType);
+        mTempCommentListValueList = mMediaCommentValueList.get(viewType);
+        int commencount = mTempCommentListValueList.size();
+        Log.i("Hello","View Type position is"+viewType+"And"+commencount);
         if (noOfComments > 0) {
             Log.i("Hello","I am in ifBlock of CommentViewHolder");
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
             return commentViewHolder;
         } else {
 
-            int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
-            Log.i("Hello","I am in ElseBlock of CommentViewHolder");
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commentcount, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
+           // int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
+            Log.i("Hello","I am in ElseBlock of CommentViewHolder"+"And comment count is"+commencount);
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
             return commentViewHolder;
         }
 
@@ -138,7 +141,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
         } else {
-            int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
+            /*int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
             Log.i("Hello", "I AM IN ELSE BLOCK OF IF RECYCLER");
             if (count <= mCommentsDetailsList.size() - 1) {
 
@@ -146,7 +149,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
                     holder.mTextComment = (TextView) holder.arrayList.get(i);
-                    // Log.i("Hello","DynemicTextView is"+holder.mTextComment);
+                    Log.i("Hello","DynemicTextView is"+holder.mTextComment);
                     if (count <= mCommentsDetailsList.size() - 1) {
                         CommentDetails commentDetails = mCommentsDetailsList.get(count);
                         holder.mTextComment.setText(commentDetails.getmWhoCommented() + " " + commentDetails.getmCommentText());
@@ -157,15 +160,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
 
 
-            }
+            }*/
 
-            /* mTempCommentListValueList = mMediaCommentValueList.get(position);
+            mTempCommentListValueList = mMediaCommentValueList.get(position);
               for(int i = 0;i <mTempCommentListValueList.size();i++){
                     holder.mTextComment = (TextView)holder.arrayList.get(i);
                     CommentDetails commentDetails =  mTempCommentListValueList.get(i);
                     holder.mTextComment.setText(commentDetails.getmWhoCommented()+"  "+commentDetails.getmCommentText());
                 }
-*/
+
         }
 
 
