@@ -28,7 +28,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 27/2/16.
  */
-public class AsyncTaskComment extends AsyncTask<Void,Void,List<CommentDetails>> {
+public class AsyncTaskComment extends AsyncTask<Void, Void, List<CommentDetails>> {
 
     private Context mContext;
     private List<CommentDetails> mCommnetList;
@@ -36,7 +36,7 @@ public class AsyncTaskComment extends AsyncTask<Void,Void,List<CommentDetails>> 
 
     SendCommentDetails sendComment;
 
-    public AsyncTaskComment(Context mContext, List<CommentDetails> mCommnetList,String url[]) {
+    public AsyncTaskComment(Context mContext, List<CommentDetails> mCommnetList, String url[]) {
         this.mContext = mContext;
         this.mCommnetList = mCommnetList;
         this.mUrl = url;
@@ -46,7 +46,7 @@ public class AsyncTaskComment extends AsyncTask<Void,Void,List<CommentDetails>> 
     @Override
     protected List<CommentDetails> doInBackground(Void... params) {
 
-        for(int i = 0;i<mUrl.length;i++){
+        for (int i = 0; i < mUrl.length; i++) {
             try {
 
                 URL urlComment = new URL(mUrl[i]);
@@ -54,30 +54,26 @@ public class AsyncTaskComment extends AsyncTask<Void,Void,List<CommentDetails>> 
                 HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
                 InputStream inputStream = httpurlConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-              //  Log.i("Hello","Response is"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-                //  if(!jsonObject.isNull("data")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
-                for(int j = 0;j<jsonArray.length();j++){
+                for (int j = 0; j < jsonArray.length(); j++) {
                     CommentDetails commentDetails = new CommentDetails();
-                    //  Log.i("Hello","&&&&&&&&&&&&&&&****************Inner Loop is************************"+j);
-                      JSONObject subObject = jsonArray.getJSONObject(j);
-                      if(!subObject.isNull("text")) {
+                    JSONObject subObject = jsonArray.getJSONObject(j);
+                    if (!subObject.isNull("text")) {
 
-                          String commentText = subObject.getString("text");
-                          commentDetails.setmCommentText(commentText);
-                        //  Log.i("Hello", "Comment Text is" + commentText);
-                      }
+                        String commentText = subObject.getString("text");
+                        commentDetails.setmCommentText(commentText);
 
-                      if(!subObject.isNull("from")){
-                          if(subObject.has("from")){
-                              JSONObject fromObject = subObject.getJSONObject("from");
-                              String whocommented = fromObject.getString("username");
-                            //  Log.i("Hello","Who commented is "+whocommented);
-                              commentDetails.setmWhoCommented(whocommented);
-                          }
-                      }
-                      mCommnetList.add(commentDetails);
+                    }
+
+                    if (!subObject.isNull("from")) {
+                        if (subObject.has("from")) {
+                            JSONObject fromObject = subObject.getJSONObject("from");
+                            String whocommented = fromObject.getString("username");
+                            commentDetails.setmWhoCommented(whocommented);
+                        }
+                    }
+                    mCommnetList.add(commentDetails);
 
 
                 }

@@ -171,9 +171,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         String commnetsUrl[] = new String[sizeOfId];
         int countMediaId = 0;
         for(int i = 0 ;i<commnetsUrl.length;i++){
-
             MediaDetails mediaDetails = mMediaList.get(i);
-          //  String mediaId = mediaDetails.getmMediaId();
             commnetsUrl[countMediaId] =  Constatns.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constatns.ACCESSTOKEN;
             countMediaId++;
 
@@ -209,20 +207,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
         mHashMapCommentsDetails = mList;
-     /*   Set keys = mList.entrySet();
-      Log.i("Hello", "Keys are" + keys);
-        Iterator<CommentDetails> iterator = keys.iterator();
-        while (iterator.hasNext()){
-            Map.Entry pairs = (Map.Entry) iterator.next();
-            String keyname = (String) pairs.getKey();
-            Log.i("Hello", "Key Name is" + keyname);
-            ArrayList<CommentDetails> arrayList = (ArrayList<CommentDetails>) pairs.getValue();
-            Log.i("Hello","Arrrrrrrrr size"+arrayList.size());
-            for(int i = 0;i<arrayList.size();i++){
-                CommentDetails commentDetails = arrayList.get(i);
-                Log.i("Hello","Who COmmented ?"+commentDetails.getmWhoCommented()+"And Comment is"+commentDetails.getmCommentText());
-            }
-        }*/
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);

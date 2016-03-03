@@ -27,21 +27,23 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 24/2/16.
  */
-public class AsynTaskUserInformation extends AsyncTask<Void,Void,List<Followers>> {
+public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Followers>> {
 
     private Context mContext;
     private List<Followers> mFollowersList;
     private List<UserDetail> mUserDetailsList;
     private String mUrl;
     SendFollwersData sendFollwersData;
-    public AsynTaskUserInformation(Context mContext, List<UserDetail> mUserDetailsList,List<Followers> mFollowersList, String mUrl) {
+
+    public AsynTaskUserInformation(Context mContext, List<UserDetail> mUserDetailsList, List<Followers> mFollowersList, String mUrl) {
 
         this.mContext = mContext;
         this.mUserDetailsList = mUserDetailsList;
-        this. mFollowersList= mFollowersList;
+        this.mFollowersList = mFollowersList;
         this.mUrl = mUrl;
         sendFollwersData = (SendFollwersData) mContext;
     }
+
     @Override
     protected List<Followers> doInBackground(Void... params) {
         try {
@@ -50,19 +52,19 @@ public class AsynTaskUserInformation extends AsyncTask<Void,Void,List<Followers>
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             InputStream inputStream = httpsURLConnection.getInputStream();
             String response = InputStreamtoString.readStream(inputStream);
-          //  Log.i("Hello","Response is"+response);
+
             JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
             JSONArray jsonArray = jsonObject.getJSONArray("data");
-            for(int i = 0;i<jsonArray.length();i++){
-             JSONObject jsonSubObject = jsonArray.getJSONObject(i);
-             Followers followers = new Followers();
-             followers.setmFollowsUserName(jsonSubObject.getString("username"));
-            // Log.i("Hello", "Name  is" + followers.getmFollowsUserName());
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+                Followers followers = new Followers();
+                followers.setmFollowsUserName(jsonSubObject.getString("username"));
+
                 followers.setmFollowsUserId(jsonSubObject.getString("id"));
-             //   Log.i("Hello", "Id is" + followers.getmFollowsUserId());
+
                 mFollowersList.add(followers);
             }
-            //Log.i("Hello","jSON aRRAY IS"+jsonArray);
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

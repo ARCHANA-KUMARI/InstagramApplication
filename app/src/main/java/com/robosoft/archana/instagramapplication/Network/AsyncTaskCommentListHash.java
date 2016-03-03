@@ -34,7 +34,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 2/3/16.
  */
-public class AsyncTaskCommentListHash extends AsyncTask<Void,CommentDetails,LinkedHashMap<String,ArrayList<CommentDetails>>> {
+public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, LinkedHashMap<String, ArrayList<CommentDetails>>> {
 
     LinkedHashMap<String, ArrayList<CommentDetails>> hashMap;
     private List<MediaDetails> mediaDetailsList;
@@ -44,50 +44,48 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void,CommentDetails,Link
     SendHashMap sendComment;
     ArrayList<CommentDetails> arrayList;
 
-    public AsyncTaskCommentListHash(Context mContext, List<CommentDetails> mCommnetList, String url[],List<MediaDetails> mediaDetailsList,LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public AsyncTaskCommentListHash(Context mContext, List<CommentDetails> mCommnetList, String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mCommnetList = mCommnetList;
         this.mUrl = url;
         this.mediaDetailsList = mediaDetailsList;
         this.hashMap = hashMap;
         sendComment = (SendHashMap) mContext;
-        Log.i("Hello","I am in AsyncTaskHashSet Constructor");
+
     }
 
     @Override
     protected LinkedHashMap<String, ArrayList<CommentDetails>> doInBackground(Void... params) {
-        Log.i("Hello", "I am in AsyncTaskHashSet Background");
-        Log.i("Helllo","Url Length is"+mUrl.length);
-        for(int i = 0;i<mUrl.length;i++){
-           arrayList = new ArrayList<>();
+
+        for (int i = 0; i < mUrl.length; i++) {
+            arrayList = new ArrayList<>();
             try {
-                Log.i("Helllo","Url Length is"+mUrl.length +"And i is"+i);
+
                 URL urlComment = new URL(mUrl[i]);
-                Log.i("Hello","Url is of Media Id"+urlComment);
+
                 MediaDetails mediaDetails = mediaDetailsList.get(i);
-                Log.i("Hello","Media id is"+mediaDetails.getmMediaId());
-                Log.i("Hello","Media url"+mediaDetails.getmStandardImageResolLink());
+
                 HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
                 InputStream inputStream = httpurlConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-                Log.i("Hello","Response is"+response);
+
 
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
 
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
-                for(int j = 0;j<jsonArray.length();j++){
+                for (int j = 0; j < jsonArray.length(); j++) {
                     CommentDetails commentDetails = new CommentDetails();
 
                     JSONObject subObject = jsonArray.getJSONObject(j);
-                    if(!subObject.isNull("text")) {
+                    if (!subObject.isNull("text")) {
 
                         String commentText = subObject.getString("text");
                         commentDetails.setmCommentText(commentText);
 
                     }
 
-                    if(!subObject.isNull("from")){
-                        if(subObject.has("from")){
+                    if (!subObject.isNull("from")) {
+                        if (subObject.has("from")) {
                             JSONObject fromObject = subObject.getJSONObject("from");
                             String whocommented = fromObject.getString("username");
 
@@ -99,7 +97,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void,CommentDetails,Link
 
 
                 }
-                hashMap.put(mediaDetails.getmMediaId(),arrayList);
+                hashMap.put(mediaDetails.getmMediaId(), arrayList);
 
 
             } catch (MalformedURLException e) {
@@ -115,9 +113,8 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void,CommentDetails,Link
     }
 
 
-
     @Override
-    protected void onPostExecute(LinkedHashMap<String,ArrayList<CommentDetails>> hashMap) {
+    protected void onPostExecute(LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         super.onPostExecute((LinkedHashMap<String, ArrayList<CommentDetails>>) hashMap);
         sendComment.sendCommentsHashMap(hashMap);
     }

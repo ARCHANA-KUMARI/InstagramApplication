@@ -18,13 +18,13 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 1/3/16.
  */
-public class AsyncTaskPostComment extends AsyncTask<String,Void,String> {
+public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
 
     private Context mContext;
     private String mComments;
     private String mResponse;
 
-    public AsyncTaskPostComment(Context mContext,String mComments) {
+    public AsyncTaskPostComment(Context mContext, String mComments) {
         this.mContext = mContext;
         this.mComments = mComments;
     }
@@ -34,14 +34,13 @@ public class AsyncTaskPostComment extends AsyncTask<String,Void,String> {
         URL url = null;
         try {
             url = new URL(params[0]);
-            Log.i("Hello", "Token Url is" + url);
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
             httpsURLConnection.setDoInput(true);
             httpsURLConnection.setDoOutput(true);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
             outputStreamWriter.write("&access_token=" + Constatns.ACCESSTOKEN +
-                    "&text=" +mComments);
+                    "&text=" + mComments);
             outputStreamWriter.flush();
             mResponse = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
 
@@ -52,8 +51,7 @@ public class AsyncTaskPostComment extends AsyncTask<String,Void,String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return  mResponse ;
+        return mResponse;
     }
 
     @Override

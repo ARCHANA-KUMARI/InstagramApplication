@@ -83,22 +83,13 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
         return mList;
     }
 
-/*
-   private String mAccessToken;
-    private String mUserFull_Name;
-    private String mUserId;
-    private String mUserName;
-    private String mProfilePicUrl;
- */
 
 
     @Override
     protected void onPostExecute(List<AccessToken> accessTokens) {
         super.onPostExecute(accessTokens);
-       // Log.i("Hello", "Request token is in onPost" + mRequestToken);
         communicator.sendUserData(accessTokens);
-       // Log.i("Hello","List size is"+accessTokens.size());
-     //   Log.i("Hello","AsyncTaskAccessToken is finished");
+
 
     }
 
