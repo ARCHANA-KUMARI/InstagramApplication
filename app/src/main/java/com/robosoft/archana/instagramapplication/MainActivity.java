@@ -207,7 +207,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
         mHashMapCommentsDetails = mList;
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,mHashMapCommentsDetails);
+        Log.i("Hello","Size of Map issssssss"+mHashMapCommentsDetails.size());
+        Log.i("Hello","I am in sendCommentHashMapINterface");
+        int comment = 0;
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,comment,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
         mRecycler.setAdapter(recyclerViewAdapter);
