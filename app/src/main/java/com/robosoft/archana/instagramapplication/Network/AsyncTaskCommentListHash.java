@@ -75,20 +75,15 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
                 for (int j = 0; j < jsonArray.length(); j++) {
                     CommentDetails commentDetails = new CommentDetails();
-
                     JSONObject subObject = jsonArray.getJSONObject(j);
                     if (!subObject.isNull("text")) {
-
                         String commentText = subObject.getString("text");
                         commentDetails.setmCommentText(commentText);
-
                     }
-
                     if (!subObject.isNull("from")) {
                         if (subObject.has("from")) {
                             JSONObject fromObject = subObject.getJSONObject("from");
                             String whocommented = fromObject.getString("username");
-
                             commentDetails.setmWhoCommented(whocommented);
                         }
                     }
@@ -111,7 +106,6 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
         }
         return hashMap;
     }
-
 
     @Override
     protected void onPostExecute(LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {

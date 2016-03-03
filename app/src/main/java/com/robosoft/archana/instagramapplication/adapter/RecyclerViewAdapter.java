@@ -57,7 +57,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<CommentDetails> mTempCommentListValueList;
     private ArrayList<String> mMedeiaKeyList = new ArrayList<>();
     private ArrayList<ArrayList<CommentDetails>> mMediaCommentValueList = new ArrayList<>();
-
     int noOfComments;
     int count = 0;
 
@@ -95,19 +94,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
-        CommentDetails commentDetails = mCommentsDetailsList.get(viewType);
+       CommentDetails commentDetails = mCommentsDetailsList.get(viewType);
+        Log.i("Hello","Who commented in onCreateViewHolder"+commentDetails.getmWhoCommented());
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         int commencount = mTempCommentListValueList.size();
+
+       // CommentDetails commentDetails =  mTempCommentListValueList.get(viewType);
         Log.i("Hello","View Type position is"+viewType+"And"+commencount);
         if (noOfComments > 0) {
-            Log.i("Hello","I am in ifBlock of CommentViewHolder");
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
+
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments,viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
             return commentViewHolder;
         } else {
-
-           // int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
-            Log.i("Hello","I am in ElseBlock of CommentViewHolder"+"And comment count is"+commencount);
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
+            // int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
+           // Log.i("Hello","I am in ElseBlock of CommentViewHolder"+"And comment count is"+commencount);
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount,viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
             return commentViewHolder;
         }
 
@@ -139,38 +140,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Toast.makeText(mContext, "No of comment is less in Instagram Post then setting comment Number", Toast.LENGTH_LONG).show();
             }
 
-
         } else {
-            /*int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
-            Log.i("Hello", "I AM IN ELSE BLOCK OF IF RECYCLER");
-            if (count <= mCommentsDetailsList.size() - 1) {
-
-                for (int i = 0; i < commentcount; i++) {
-
-
-                    holder.mTextComment = (TextView) holder.arrayList.get(i);
-                    Log.i("Hello","DynemicTextView is"+holder.mTextComment);
-                    if (count <= mCommentsDetailsList.size() - 1) {
-                        CommentDetails commentDetails = mCommentsDetailsList.get(count);
-                        holder.mTextComment.setText(commentDetails.getmWhoCommented() + " " + commentDetails.getmCommentText());
-
-                    }
-
-                    count++;
-                }
-
-
-            }*/
-
             mTempCommentListValueList = mMediaCommentValueList.get(position);
               for(int i = 0;i <mTempCommentListValueList.size();i++){
                     holder.mTextComment = (TextView)holder.arrayList.get(i);
                     CommentDetails commentDetails =  mTempCommentListValueList.get(i);
                     holder.mTextComment.setText(commentDetails.getmWhoCommented()+"  "+commentDetails.getmCommentText());
                 }
-
         }
-
 
     }
 
@@ -186,30 +163,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
+
         int size;
-        //  View itemView;
         private ImageView mImage;
         private TextView mTextDescription;
         private EditText mEditComment;
         private ImageButton mCommentButton;
-        ViewGroup viewGroup;
         private TextView mTextComment;
         String mediaId, whoCommented;
         LinearLayout linearLayout;
         ArrayList<TextView> arrayList = new ArrayList<>();
         int position;
 
-        public CommentViewHolder(View itemView, int size, ViewGroup viewGroup, final int position, final String mediaId, final String whoCommented) {
+        public CommentViewHolder(View itemView, int size,final int position, final String mediaId, final String whoCommented) {
             super(itemView);
-            //  this.itemView = itemView;
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
             mCommentButton = (ImageButton) itemView.findViewById(R.id.commentbtn);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.lay);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
-            this.viewGroup = viewGroup;
             this.mediaId = mediaId;
             this.whoCommented = whoCommented;
+
+            Log.i("Hello","Who commented in ViewHolder class?"+whoCommented);
             this.size = size;
             this.position = position;
             for (int i = 0; i < size; i++) {
