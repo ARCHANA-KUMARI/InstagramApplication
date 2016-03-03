@@ -97,11 +97,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         CommentDetails commentDetails = mCommentsDetailsList.get(viewType);
         if (noOfComments > 0) {
+            Log.i("Hello","I am in ifBlock of CommentViewHolder");
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
             return commentViewHolder;
         } else {
 
             int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
+            Log.i("Hello","I am in ElseBlock of CommentViewHolder");
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commentcount, parent, viewType, mediaDetails.getmMediaId(), commentDetails.getmWhoCommented());
             return commentViewHolder;
         }
