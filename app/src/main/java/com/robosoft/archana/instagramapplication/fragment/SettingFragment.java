@@ -24,8 +24,8 @@ public class SettingFragment extends DialogFragment{
 
     private EditText mEditComment;
     private Button mButtonOk;
-    private Context mContext;
     NoOfCommentInterface noOfCommentInterface;
+
     public SettingFragment() {
         // Required empty public constructor
     }
@@ -35,12 +35,11 @@ public class SettingFragment extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-           Log.i("Hello", "I AM IN onCreateView of Fragment");
-          // mContext = getContext();
+
           View view  = inflater.inflate(R.layout.fragment_setting, container, false);
           mEditComment = (EditText) view.findViewById(R.id.editcomment);
           mButtonOk = (Button)view.findViewById(R.id.btn);
-          getDialog().setTitle("Setting Dialog");
+          getDialog().setTitle(R.string.dialogtitle);
           return  view;
 
     }
@@ -49,22 +48,18 @@ public class SettingFragment extends DialogFragment{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         noOfCommentInterface = (NoOfCommentInterface) getActivity();
-        Log.i("Hello", "I AM IN onAttach() of Fragment"+noOfCommentInterface);
-        ;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("Hello", "I AM IN onActivityCreated");
+
         mButtonOk.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Log.i("Hello", "I AM IN ONCLICK OF BUTTON");
+
                 int noOfComments = Integer.parseInt(mEditComment.getText().toString());
-                  //noOfCommentInterface.onClick(noOfComments);
-              //  getActivity().getSupportFragmentManager().beginTransaction().remove(SettingFragment.this).commit();
                 noOfCommentInterface.onClick(noOfComments);
                 dismiss();
 

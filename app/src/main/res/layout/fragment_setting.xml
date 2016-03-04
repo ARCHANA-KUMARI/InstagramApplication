@@ -12,7 +12,7 @@
         android:id="@+id/textcomment"
        />
    <EditText
-       android:layout_toRightOf="@id/textcomment"
+       android:layout_below="@id/textcomment"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:hint="Enter no of comments"
