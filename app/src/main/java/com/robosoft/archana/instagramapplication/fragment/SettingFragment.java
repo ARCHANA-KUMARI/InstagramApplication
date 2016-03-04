@@ -23,7 +23,7 @@ import com.robosoft.archana.instagramapplication.R;
 public class SettingFragment extends DialogFragment{
 
     private EditText mEditComment;
-    private Button mButtonOk;
+    private Button mButtonOk,mButtonCancel;
     NoOfCommentInterface noOfCommentInterface;
 
     public SettingFragment() {
@@ -39,6 +39,7 @@ public class SettingFragment extends DialogFragment{
          View view  = inflater.inflate(R.layout.fragment_setting, container, false);
           mEditComment = (EditText) view.findViewById(R.id.editcomment);
           mButtonOk = (Button)view.findViewById(R.id.btn);
+          mButtonCancel = (Button)view.findViewById(R.id.cancel);
           getDialog().setTitle(R.string.dialogtitle);
           return  view;
 
@@ -53,7 +54,6 @@ public class SettingFragment extends DialogFragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         mButtonOk.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -65,5 +65,14 @@ public class SettingFragment extends DialogFragment{
 
             }
         });
+        mButtonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!mEditComment.getText().toString().isEmpty())
+                     mEditComment.setText(" ");
+            }
+        });
     }
+
+
 }
