@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private WebView mWebview;
     private RecyclerView mRecycler;
     final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-    // Use 1/8th of the available memory for this memory cache.
+    // Use 1/8th of the available memory for this memory cach
     final int cacheSize = maxMemory / 8;
     private LruCache<String, Bitmap> mLrucCach = new LruCache<>(cacheSize);
 
