@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="cardviewbottommargin">16dip</dimen>
+    <dimen name="cardviewleftmargin">16dip</dimen>
+    <dimen name="cardviewrightmargin">16dip</dimen>
+    <dimen name="cardviewtopmargin">16dip</dimen>
 </resources>

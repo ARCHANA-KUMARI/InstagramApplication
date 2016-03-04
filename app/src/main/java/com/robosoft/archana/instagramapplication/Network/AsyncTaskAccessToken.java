@@ -62,7 +62,6 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
                     "&code=" + mRequestToken);
             outputStreamWriter.flush();
             String response = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
-           // Log.i("Hello","Response of getting access Token is"+response);
             JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
             String accessTokenString = jsonObject.getString("access_token"); //Here is your ACCESS TOKEN
             //Create object of AccessToken class

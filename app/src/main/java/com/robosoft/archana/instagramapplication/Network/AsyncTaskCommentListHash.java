@@ -3,7 +3,7 @@ package com.robosoft.archana.instagramapplication.Network;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.robosoft.archana.instagramapplication.Interfaces.SendHashMap;
+import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
@@ -33,7 +33,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     private Context mContext;
     private List<CommentDetails> mCommnetList;
     private String mUrl[];
-    SendHashMap sendComment;
+    SendCommentDetails sendComment;
     ArrayList<CommentDetails> arrayList;
 
     public AsyncTaskCommentListHash(Context mContext,String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
@@ -42,7 +42,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
         this.mUrl = url;
         this.mediaDetailsList = mediaDetailsList;
         this.hashMap = hashMap;
-        sendComment = (SendHashMap) mContext;
+        sendComment = (SendCommentDetails) mContext;
 
     }
 

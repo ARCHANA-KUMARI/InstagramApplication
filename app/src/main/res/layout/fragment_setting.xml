@@ -5,24 +5,22 @@
     tools:context="com.robosoft.archana.instagramapplication.fragment.SettingFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Number of Comments"
-        android:id="@+id/textcomment"
-       />
-   <EditText
-       android:layout_below="@id/textcomment"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:hint="Enter no of comments"
-       android:id="@+id/editcomment"/>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/textinput"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hintofeditcomment"
+            android:id="@+id/editcomment"/>
+    </android.support.design.widget.TextInputLayout>
     <Button
         android:background="?android:attr/selectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn"
-        android:layout_below="@id/editcomment"
+        android:layout_below="@id/textinput"
         android:gravity="center"
         android:text="Dismiss"
         android:textAllCaps="false"

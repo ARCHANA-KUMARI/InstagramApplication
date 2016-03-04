@@ -36,7 +36,7 @@ public class SettingFragment extends DialogFragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-          View view  = inflater.inflate(R.layout.fragment_setting, container, false);
+         View view  = inflater.inflate(R.layout.fragment_setting, container, false);
           mEditComment = (EditText) view.findViewById(R.id.editcomment);
           mButtonOk = (Button)view.findViewById(R.id.btn);
           getDialog().setTitle(R.string.dialogtitle);

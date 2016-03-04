@@ -10,6 +10,6 @@ import java.util.List;
 /**
  * Created by archana on 2/3/16.
  */
-public interface SendHashMap {
+public interface SendCommentDetails {
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList);
 }
