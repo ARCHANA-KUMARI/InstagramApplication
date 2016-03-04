@@ -19,7 +19,6 @@ import android.webkit.WebView;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.NoOfCommentInterface;
-import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Interfaces.SendHashMap;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
@@ -43,13 +42,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,SendCommentDetails,NoOfCommentInterface,SendHashMap {
+public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,SendHashMap {
 
 
     private List<UserDetail> mUserDetailList = new ArrayList<>();
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
-    private List<CommentDetails> mCommentsDetailsList = new ArrayList<>();
     private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
     private WebView mWebview;
     private RecyclerView mRecycler;
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     // Use 1/8th of the available memory for this memory cache.
     final int cacheSize = maxMemory / 8;
     private LruCache<String, Bitmap> mLrucCach = new LruCache<>(cacheSize);
-    private  AsyncTaskAccessToken mAsyncTaskAccessToken;
+
     private Toolbar mToolbar;
     private CoordinatorLayout mCoordinatorLayout;
 
@@ -117,18 +115,9 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         return super.onOptionsItemSelected(item);
     }
 
-      void setSnackBar(){
-        Snackbar.make(mCoordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
-                .setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                }).show();
-     }
-
     @Override
     public void sendUserData(List<AccessToken> accessTokens) {
+
         String accessToken = null,id = null;
         if(accessTokens.size()==1){
             AccessToken access = accessTokens.get(0);
@@ -170,30 +159,14 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             MediaDetails mediaDetails = mMediaList.get(i);
             commnetsUrl[countMediaId] =  Constatns.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constatns.ACCESSTOKEN;
             countMediaId++;
-
-
         }
-        /*AsyncTaskComment asyncTaskComment = new AsyncTaskComment(this,mCommentsDetailsList,commnetsUrl);
-        asyncTaskComment.execute();*/
-
-        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,mCommentsDetailsList,commnetsUrl,mMediaList, mHashMapCommentsDetails);
+        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commnetsUrl,mMediaList, mHashMapCommentsDetails);
         asyncTaskCommentListHash.execute();
 
     }
 
     @Override
-    public void sendComment(List<CommentDetails> commentDetailsList) {
-        mCommentsDetailsList = commentDetailsList;
-       /* RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mFollwersDetailsList,mMedeiaDetailsList,mCommentsDetailsList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecycler.setLayoutManager(linearLayoutManager);
-        mRecycler.setAdapter(recyclerViewAdapter);*/
-    }
-
-
-    @Override
     public void onClick(int noOfComments) {
-        Log.i("Hello","No of comment is "+noOfComments);
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,noOfComments,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
@@ -203,8 +176,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
         mHashMapCommentsDetails = mList;
-        Log.i("Hello","Size of Map issssssss"+mHashMapCommentsDetails.size());
-        Log.i("Hello","I am in sendCommentHashMapINterface");
         int comment = 0;
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,comment,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

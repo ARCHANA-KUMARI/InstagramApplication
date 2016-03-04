@@ -2,10 +2,7 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.TextView;
 
-import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.SendHashMap;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
@@ -21,13 +18,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -44,7 +36,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     SendHashMap sendComment;
     ArrayList<CommentDetails> arrayList;
 
-    public AsyncTaskCommentListHash(Context mContext, List<CommentDetails> mCommnetList, String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public AsyncTaskCommentListHash(Context mContext,String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mCommnetList = mCommnetList;
         this.mUrl = url;

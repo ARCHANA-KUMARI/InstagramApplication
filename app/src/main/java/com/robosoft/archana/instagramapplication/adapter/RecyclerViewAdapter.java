@@ -62,7 +62,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     int noOfComments;
 
-    public RecyclerViewAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList,int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public RecyclerViewAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mMedeiaDetailsList = mMedeiaDetailsList;
         this.mLrucache = mLrucache;
@@ -91,10 +91,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         int commencount = mTempCommentListValueList.size();
         if (noOfComments > 0) {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments,viewType, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
         } else {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount,viewType, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount, viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
         }
 
@@ -110,32 +110,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.mImage.setImageResource(R.drawable.download);
         }
         holder.mTextDescription.setText(mediaDetails.getmCaption());
-        if (noOfComments > 0) {
-            mTempCommentListValueList = mMediaCommentValueList.get(position);
-            if (noOfComments <= mTempCommentListValueList.size()) {
-                for (int i = 0; i < noOfComments; i++) {
-                    holder.mTextComment = (TextView) holder.arrayList.get(i);
-                    CommentDetails commentDetails = mTempCommentListValueList.get(i);
-                    holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
-                }
-            } else {
-                //SnackBarView.setSnackBar(mOneRow);
+        mTempCommentListValueList = mMediaCommentValueList.get(position);
+        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()) {
+            for (int i = 0; i < noOfComments; i++) {
+                holder.mTextComment = (TextView) holder.arrayList.get(i);
+                CommentDetails commentDetails = mTempCommentListValueList.get(i);
+                holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
             }
-
         } else {
-                   mTempCommentListValueList = mMediaCommentValueList.get(position);
-                   for(int i = 0;i <mTempCommentListValueList.size();i++){
-                    holder.mTextComment = (TextView)holder.arrayList.get(i);
-                    CommentDetails commentDetails =  mTempCommentListValueList.get(i);
-                    holder.mTextComment.setText(commentDetails.getmWhoCommented()+"  "+commentDetails.getmCommentText());
-                }
+
+            for (int i = 0; i < mTempCommentListValueList.size(); i++) {
+                holder.mTextComment = (TextView) holder.arrayList.get(i);
+                CommentDetails commentDetails = mTempCommentListValueList.get(i);
+                holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
+            }
         }
 
     }
+
     @Override
     public int getItemCount() {
         return mMedeiaDetailsList.size();
     }
+
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -177,7 +174,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (!comment.isEmpty()) {
                         TextView textComment = new TextView(mContext);
                         linearLayout.addView(textComment);
-                        textComment.setText(Constatns.API_USERNAME+" " + comment);
+                        textComment.setText(Constatns.API_USERNAME + " " + comment);
                         String postCommentUrl = Constatns.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
                     }
