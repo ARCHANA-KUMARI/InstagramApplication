@@ -89,7 +89,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         int commencount = mTempCommentListValueList.size();
-        if (noOfComments > 0) {
+
+        if (noOfComments > 0 && noOfComments<=commencount) {
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
         } else {
@@ -116,8 +117,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
             }
         } else {
-
-            for (int i = 0; i < mTempCommentListValueList.size(); i++) {
+                for (int i = 0; i < mTempCommentListValueList.size(); i++) {
                 holder.mTextComment = (TextView) holder.arrayList.get(i);
                 CommentDetails commentDetails = mTempCommentListValueList.get(i);
                 holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());

@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/btn"
         android:layout_below="@id/textinput"
-        android:text="Dismiss"
+        android:text="Set"
         android:textAllCaps="false"
         android:layout_centerInParent="true"/>
     <Button

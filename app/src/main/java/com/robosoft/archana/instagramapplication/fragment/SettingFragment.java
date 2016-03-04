@@ -59,9 +59,12 @@ public class SettingFragment extends DialogFragment{
             @Override
             public void onClick(View v) {
 
-                int noOfComments = Integer.parseInt(mEditComment.getText().toString());
-                noOfCommentInterface.onClick(noOfComments);
-                dismiss();
+                if (!mEditComment.getText().toString().isEmpty()) {
+                    int noOfComments = Integer.parseInt(mEditComment.getText().toString());
+                    noOfCommentInterface.onClick(noOfComments);
+                    dismiss();
+                }
+
 
             }
         });
