@@ -32,20 +32,16 @@ import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsynTaskUserInformation;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskAccessToken;
-import com.robosoft.archana.instagramapplication.Network.AsyncTaskComment;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskCommentListHash;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskGetRecentMedia;
 import com.robosoft.archana.instagramapplication.Util.NetworkStatus;
+import com.robosoft.archana.instagramapplication.Util.SnackBarView;
 import com.robosoft.archana.instagramapplication.adapter.RecyclerViewAdapter;
 import com.robosoft.archana.instagramapplication.fragment.SettingFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,SendCommentDetails,NoOfCommentInterface,SendHashMap {
 
@@ -82,12 +78,12 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             mWebview.loadUrl(Constatns.aurthUrlString);
         }
         else{
-             setSnackBar();
+            SnackBarView.setSnackBar(mCoordinatorLayout);
              FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
              fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setSnackBar();
+                    SnackBarView.setSnackBar(view);
                 }
             });
         }
@@ -121,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         return super.onOptionsItemSelected(item);
     }
 
-     void setSnackBar(){
+      void setSnackBar(){
         Snackbar.make(mCoordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
                 .setAction("Retry", new View.OnClickListener() {
                     @Override
@@ -177,8 +173,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
 
         }
-        AsyncTaskComment asyncTaskComment = new AsyncTaskComment(this,mCommentsDetailsList,commnetsUrl);
-        asyncTaskComment.execute();
+        /*AsyncTaskComment asyncTaskComment = new AsyncTaskComment(this,mCommentsDetailsList,commnetsUrl);
+        asyncTaskComment.execute();*/
 
         AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,mCommentsDetailsList,commnetsUrl,mMediaList, mHashMapCommentsDetails);
         asyncTaskCommentListHash.execute();
@@ -198,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void onClick(int noOfComments) {
         Log.i("Hello","No of comment is "+noOfComments);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,noOfComments,mHashMapCommentsDetails);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,noOfComments,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
         mRecycler.setAdapter(recyclerViewAdapter);
@@ -210,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         Log.i("Hello","Size of Map issssssss"+mHashMapCommentsDetails.size());
         Log.i("Hello","I am in sendCommentHashMapINterface");
         int comment = 0;
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mCommentsDetailsList,comment,mHashMapCommentsDetails);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,comment,mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
         mRecycler.setAdapter(recyclerViewAdapter);

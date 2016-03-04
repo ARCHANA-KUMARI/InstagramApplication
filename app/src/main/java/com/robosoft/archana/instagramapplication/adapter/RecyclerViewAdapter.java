@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.robosoft.archana.instagramapplication.Network.AsyncTaskPostComment;
 import com.robosoft.archana.instagramapplication.Network.ImageDownloader;
 import com.robosoft.archana.instagramapplication.R;
 import com.robosoft.archana.instagramapplication.Util.NetworkStatus;
+import com.robosoft.archana.instagramapplication.Util.SnackBarView;
 
 import org.w3c.dom.Comment;
 
@@ -50,30 +53,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private View mOneRow;
     private List<MediaDetails> mMedeiaDetailsList;
-    private List<CommentDetails> mCommentsDetailsList;
+
     private LruCache<String, Bitmap> mLrucache;
     private HashMap<String, ArrayList<CommentDetails>> hashMap;
     private ArrayList<CommentDetails> mTempCommentListValueList;
     private ArrayList<String> mMedeiaKeyList = new ArrayList<>();
     private ArrayList<ArrayList<CommentDetails>> mMediaCommentValueList = new ArrayList<>();
+
     int noOfComments;
-    int count = 0;
 
-    /*public RecyclerViewAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, List<CommentDetails> mCommentsDetailsList, HashMap<String, ArrayList<CommentDetails>> mHashMapCommentsDetails) {
+    public RecyclerViewAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList,int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mMedeiaDetailsList = mMedeiaDetailsList;
-        this.mCommentsDetailsList = mCommentsDetailsList;
-        this.mLrucache = mLrucache;
-        Log.i("Hello","I am in first Recyc constuctor");
-    }*/
-
-    public RecyclerViewAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, List<CommentDetails> mCommentsDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
-        this.mContext = mContext;
-        this.mMedeiaDetailsList = mMedeiaDetailsList;
-        this.mCommentsDetailsList = mCommentsDetailsList;
         this.mLrucache = mLrucache;
         this.noOfComments = noOfComments;
         this.hashMap = hashMap;
+
         Set keys = hashMap.entrySet();
         Log.i("Hello", "Keys are" + keys);
         Iterator<CommentDetails> iterator = keys.iterator();
@@ -83,7 +78,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mMedeiaKeyList.add(keyname);
             ArrayList<CommentDetails> arrayList = (ArrayList<CommentDetails>) pairs.getValue();
             mMediaCommentValueList.add(arrayList);
-            Log.i("Hello", "I am in second Recyc constuctor");
+
         }
 
     }
@@ -93,21 +88,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
-        CommentDetails commentDetails = mCommentsDetailsList.get(viewType);
-       // Log.i("Hello","Who commented in onCreateViewHolder"+commentDetails.getmWhoCommented());
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         int commencount = mTempCommentListValueList.size();
-
-       // CommentDetails commentDetails =  mTempCommentListValueList.get(viewType);
-        Log.i("Hello","View Type position is"+viewType+"And"+commencount);
         if (noOfComments > 0) {
-
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments,viewType, mediaDetails.getmMediaId(),commentDetails.getmWhoCommented() );
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments,viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
         } else {
-            // int commentcount = Integer.parseInt(mediaDetails.getmCommentsCount());
-           // Log.i("Hello","I am in ElseBlock of CommentViewHolder"+"And comment count is"+commencount);
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount,viewType, mediaDetails.getmMediaId(),commentDetails.getmWhoCommented());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, commencount,viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
         }
 
@@ -116,17 +103,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
 
-
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         if (NetworkStatus.isNetworkAvailable(mContext)) {
-
             new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
-
         } else {
             holder.mImage.setImageResource(R.drawable.download);
         }
         holder.mTextDescription.setText(mediaDetails.getmCaption());
-
         if (noOfComments > 0) {
             mTempCommentListValueList = mMediaCommentValueList.get(position);
             if (noOfComments <= mTempCommentListValueList.size()) {
@@ -136,12 +119,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
                 }
             } else {
-                Toast.makeText(mContext, "No of comment is less in Instagram Post then setting comment Number", Toast.LENGTH_LONG).show();
+                //SnackBarView.setSnackBar(mOneRow);
             }
 
         } else {
-            mTempCommentListValueList = mMediaCommentValueList.get(position);
-              for(int i = 0;i <mTempCommentListValueList.size();i++){
+                   mTempCommentListValueList = mMediaCommentValueList.get(position);
+                   for(int i = 0;i <mTempCommentListValueList.size();i++){
                     holder.mTextComment = (TextView)holder.arrayList.get(i);
                     CommentDetails commentDetails =  mTempCommentListValueList.get(i);
                     holder.mTextComment.setText(commentDetails.getmWhoCommented()+"  "+commentDetails.getmCommentText());
@@ -149,13 +132,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
     }
-
-
     @Override
     public int getItemCount() {
         return mMedeiaDetailsList.size();
     }
-
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -163,18 +143,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
-        int size;
+        int noOfCommentTextView;
         private ImageView mImage;
         private TextView mTextDescription;
         private EditText mEditComment;
         private ImageButton mCommentButton;
         private TextView mTextComment;
-        String mediaId, whoCommented;
+        String mediaId;
         LinearLayout linearLayout;
         ArrayList<TextView> arrayList = new ArrayList<>();
         int position;
 
-        public CommentViewHolder(View itemView, int size, final int position, final String mediaId, final String whoCommented) {
+        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final String mediaId) {
             super(itemView);
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
@@ -182,12 +162,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             linearLayout = (LinearLayout) itemView.findViewById(R.id.lay);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
             this.mediaId = mediaId;
-            this.whoCommented = whoCommented;
-
-          //  Log.i("Hello","Who commented in ViewHolder class?"+whoCommented);
-            this.size = size;
+            this.noOfCommentTextView = noOfCommentTextView;
             this.position = position;
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < noOfCommentTextView; i++) {
                 mTextComment = new TextView(mContext);
                 linearLayout.addView(mTextComment);
                 arrayList.add(mTextComment);
@@ -197,10 +174,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View v) {
                     String comment = mEditComment.getText().toString();
-                    TextView textComment = new TextView(mContext);
-                    linearLayout.addView(textComment);
-                    if (comment.length() != 0) {
-                        textComment.setText(whoCommented+" " + comment);
+                    if (!comment.isEmpty()) {
+                        TextView textComment = new TextView(mContext);
+                        linearLayout.addView(textComment);
+                        textComment.setText(Constatns.API_USERNAME+" " + comment);
                         String postCommentUrl = Constatns.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
                     }
