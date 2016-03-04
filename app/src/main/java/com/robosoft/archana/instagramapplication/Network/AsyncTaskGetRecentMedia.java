@@ -48,7 +48,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
             URL url = null;
             try {
                 url = new URL(mUrl[i]);
-
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
@@ -69,7 +68,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                         mediaDetails.setmCommentsCount(commentCount);
                     }
 
-
                     if (!jsonSubObject.isNull("likes")) {
                         JSONObject likeObject = jsonSubObject.getJSONObject("likes");
                         String likesCount = likeObject.getString("count");
@@ -77,6 +75,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
 
                     }
+
                     if (!jsonSubObject.isNull("images")) {
                         JSONObject imageObject = jsonSubObject.getJSONObject("images");
                         JSONObject standardResObject = imageObject.getJSONObject("standard_resolution");
@@ -84,23 +83,33 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                         mediaDetails.setmStandardImageResolLink(standardResUrl);
                     }
 
-
                     if (!jsonSubObject.isNull("caption")) {
                         JSONObject captionObject = jsonSubObject.getJSONObject("caption");
                         if (captionObject.has("text")) {
                             String text = captionObject.getString("text");
-
                             mediaDetails.setmCaption(text);
 
                         }
 
                     }
+
                     if (!jsonSubObject.isNull("id")) {
-
                         String mediaId = jsonSubObject.getString("id");
-
                         mediaDetails.setmMediaId(mediaId);
                         mSizeOfId++;
+                    }
+
+                    if(!jsonSubObject.isNull("user")){
+                        JSONObject userObject = jsonSubObject.getJSONObject("user");
+                        mediaDetails.setmUserName(userObject.getString("username"));
+                        mediaDetails.setmProfilePic(userObject.getString("profile_picture"));
+                    }
+
+                    if(!jsonSubObject.isNull("location")){
+                        Log.i("Hello","I am in if location block");
+                        JSONObject locationObject = jsonSubObject.getJSONObject("location");
+                         mediaDetails.setmLocation(locationObject.getString("name"));
+
                     }
                     mediaDetailsList.add(mediaDetails);
                 }

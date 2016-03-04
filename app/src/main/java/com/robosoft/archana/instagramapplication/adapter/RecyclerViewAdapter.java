@@ -103,12 +103,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
 
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
-        if (NetworkStatus.isNetworkAvailable(mContext)) {
-            new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
-        } else {
-            holder.mImage.setImageResource(R.drawable.download);
-        }
+        new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
         holder.mTextDescription.setText(mediaDetails.getmCaption());
+        holder.mTextUserName.setText(mediaDetails.getmUserName());
+        holder.mTextLocation.setText(mediaDetails.getmLocation());
+        new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
         mTempCommentListValueList = mMediaCommentValueList.get(position);
         if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()) {
             for (int i = 0; i < noOfComments; i++) {
@@ -140,11 +139,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
         int noOfCommentTextView;
-        private ImageView mImage;
+        private ImageView mImage,mImageProfilePic;
         private TextView mTextDescription;
         private EditText mEditComment;
         private ImageButton mCommentButton;
-        private TextView mTextComment;
+        private TextView mTextComment,mTextUserName,mTextLocation;
         String mediaId;
         LinearLayout linearLayout;
         ArrayList<TextView> arrayList = new ArrayList<>();
@@ -155,8 +154,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
             mCommentButton = (ImageButton) itemView.findViewById(R.id.commentbtn);
+            mTextUserName = (TextView) itemView.findViewById(R.id.username);
+            mTextLocation = (TextView)itemView.findViewById(R.id.location);
+            mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.lay);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
+
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
             this.position = position;

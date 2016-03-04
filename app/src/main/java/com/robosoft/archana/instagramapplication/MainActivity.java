@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             followers.setmFollowsUserName(access.getmUserName());
             mFollwersDetailsList.add(followers);
         }
-
         String followersUrl  = "https://api.instagram.com/v1/users/self/follows?access_token="+accessToken;
         AsynTaskUserInformation asynTaskUserInformation = new AsynTaskUserInformation(this,mUserDetailList,mFollwersDetailsList,followersUrl);
         asynTaskUserInformation.execute();

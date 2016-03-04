@@ -19,7 +19,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <com.robosoft.archana.instagramapplication.Util.MakeImageRound
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/profilepic"
+                    android:src="@drawable/download"
+                 />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/profilepic"
+                    android:text="Name"
+                    android:textColor="@color/username"
+                    android:id="@+id/username"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/username"
+                    android:text="Name"
+                    android:textColor="@color/location"
+                    android:layout_toRightOf="@id/profilepic"
+                    android:id="@+id/location"/>
+
+            </RelativeLayout>
             <ImageView
+                android:layout_marginTop="10dp"
                 android:id="@+id/image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,7 +78,7 @@
                 android:id="@+id/comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Your Comment"/>
+                android:hint="@string/addcommentedit"/>
         </android.support.design.widget.TextInputLayout>
         <ImageButton
             android:id="@+id/commentbtn"

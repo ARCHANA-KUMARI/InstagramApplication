@@ -4,8 +4,23 @@ package com.robosoft.archana.instagramapplication.Modal;
  * Created by archana on 26/2/16.
  */
 public class MediaDetails {
+    public String getmUserName() {
+        return mUserName;
+    }
 
-    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId;
+    public void setmUserName(String mUserName) {
+        this.mUserName = mUserName;
+    }
+
+    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation;
+
+    public String getmLocation() {
+        return mLocation;
+    }
+
+    public void setmLocation(String mLocation) {
+        this.mLocation = mLocation;
+    }
 
     public String getmCommentsCount() {
         return mCommentsCount;
@@ -41,6 +56,14 @@ public class MediaDetails {
 
     public String getmMediaId() {
         return mMediaId;
+    }
+
+    public String getmProfilePic() {
+        return mProfilePic;
+    }
+
+    public void setmProfilePic(String mProfilePic) {
+        this.mProfilePic = mProfilePic;
     }
 
     public void setmMediaId(String mMediaId) {
