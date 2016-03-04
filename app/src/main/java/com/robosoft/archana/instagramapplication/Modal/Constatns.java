@@ -17,8 +17,7 @@ public class Constatns {
     public static final String ACCESSTOKEN = "2972956137.289b08f.4518b8e436fd444195fdf1d47745a3c5";
 
    // Used to specify the API version which we are going to use.
-   public static final String aurthUrlString = AUTHURL+"?client_id=" + CLIENT_ID+ "&redirect_uri="+ CALLBACK_URL + "&response_type=code&display=touch&scope=likes+comments+captions+relationships"+"&scope=public_content"+"&scope=follower_list";
-   // public static final String tokenURLString = APIURL + "?client_id=" +CLIENT_ID+ "&client_secret=" + CLIENT_SECRET + "&redirect_uri=" + CALLBACK_URL + "&grant_type=authorization_code";
+    public static final String aurthUrlString = AUTHURL+"?client_id=" + CLIENT_ID+ "&redirect_uri="+ CALLBACK_URL + "&response_type=code&display=touch&scope=likes+comments+captions+relationships"+"&scope=public_content"+"&scope=follower_list";
     public static final String tokenURLString = TOKENURL +"?client_id="+CLIENT_ID +"&client_secret="+CLIENT_SECRET+"&redirect_uri="+CALLBACK_URL+"&grant_type=authorization_code";
     public static final String API_USERNAME = "mcasantosh";
 

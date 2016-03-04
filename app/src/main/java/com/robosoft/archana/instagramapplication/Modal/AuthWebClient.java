@@ -16,48 +16,31 @@ import java.util.List;
  */
 public class AuthWebClient extends WebViewClient {
 
-     String request_token;
-     private Context mContext;
+    String request_token;
+    private Context mContext;
     private List<AccessToken> mList = new ArrayList<>();
     private AsyncTaskAccessToken mAsyncTaskAccessToken;
+
     public AuthWebClient(Context mContext) {
         this.mContext = mContext;
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.i("Hello","I method of shoutldoverrrid");
-        if (url.startsWith(Constatns.CALLBACK_URL))
-        {  Log.i("Hello", "I am if method of shoutldoverrrid");
+
+        if (url.startsWith(Constatns.CALLBACK_URL)) {
             System.out.println(url);
             String parts[] = url.split("=");
             request_token = parts[1];  //This is your request token.
             RequestToken requestToken = new RequestToken();
             requestToken.setRequestToken(request_token);
             Log.i("Hello", "Request_Token is" + request_token);
-            mAsyncTaskAccessToken =  new AsyncTaskAccessToken((MainActivity) mContext,mList,request_token);
+            mAsyncTaskAccessToken = new AsyncTaskAccessToken((MainActivity) mContext, mList, request_token);
             mAsyncTaskAccessToken.execute();
             return true;
         }
         return false;
 
-
     }
-    /* public class AuthWebViewClient extends WebViewClient
-    {o
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url)
-        {
-            if (url.startsWith(CALLBACKURL))
-            {
-                System.out.println(url);
-                String parts[] = url.split("=");
-                request_token = parts[1];  //This is your request token.
-                InstagramLoginDialog.this.dismiss();
-                return true;
-            }
-            return false;
 
-        }
-    }*/
 }

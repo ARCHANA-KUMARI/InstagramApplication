@@ -70,7 +70,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.hashMap = hashMap;
 
         Set keys = hashMap.entrySet();
-        Log.i("Hello", "Keys are" + keys);
         Iterator<CommentDetails> iterator = keys.iterator();
         while (iterator.hasNext()) {
             Map.Entry pairs = (Map.Entry) iterator.next();
