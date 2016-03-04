@@ -1,5 +1,7 @@
 package com.robosoft.archana.instagramapplication;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -55,7 +57,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     private Toolbar mToolbar;
     private CoordinatorLayout mCoordinatorLayout;
-
+    private String MyPREFERENCES = "mypreference";
+    private SharedPreferences mSharedPreference;
+    private static final String NO_OF_COMMENTS ="NoOfComment";
+    SharedPreferences.Editor mEditor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setSupportActionBar(mToolbar);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
         mWebview = (WebView) findViewById(R.id.webview);
+        mSharedPreference = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        mEditor = mSharedPreference.edit();
         if(NetworkStatus.isNetworkAvailable(this)){
             mWebview.loadUrl("https://www.instagram.com/accounts/login/?force_classic_login");
             mWebview.setVerticalScrollBarEnabled(false);
@@ -76,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             SnackBarView.setSnackBar(mCoordinatorLayout);
              FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
              fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SnackBarView.setSnackBar(view);
-                }
-            });
+                 @Override
+                 public void onClick(View view) {
+                     SnackBarView.setSnackBar(view);
+                 }
+             });
         }
         mRecycler = (RecyclerView)findViewById(R.id.recycler);
 
@@ -163,7 +170,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     public void onClick(int noOfComments) {
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,noOfComments,mHashMapCommentsDetails);
+
+        mEditor.putInt( NO_OF_COMMENTS,noOfComments);
+        mEditor.commit();
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
         mRecycler.setAdapter(recyclerViewAdapter);
@@ -171,9 +181,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
-        mHashMapCommentsDetails = mList;
-        int comment = 0;
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,comment,mHashMapCommentsDetails);
+
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecycler.setLayoutManager(linearLayoutManager);
         mRecycler.setAdapter(recyclerViewAdapter);
