@@ -2,39 +2,23 @@ package com.robosoft.archana.instagramapplication.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
-import com.robosoft.archana.instagramapplication.Modal.Constatns;
-import com.robosoft.archana.instagramapplication.Modal.Followers;
+import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
-import com.robosoft.archana.instagramapplication.Network.AsyncTaskCommentListHash;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskPostComment;
 import com.robosoft.archana.instagramapplication.Network.ImageDownloader;
 import com.robosoft.archana.instagramapplication.R;
-import com.robosoft.archana.instagramapplication.Util.NetworkStatus;
-import com.robosoft.archana.instagramapplication.Util.SnackBarView;
-
-import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,8 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Created by archana on 29/2/16.
@@ -176,8 +158,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (!comment.isEmpty()) {
                         TextView textComment = new TextView(mContext);
                         linearLayout.addView(textComment);
-                        textComment.setText(Constatns.API_USERNAME + " " + comment);
-                        String postCommentUrl = Constatns.APIURL + "/media/" + mediaId + "/comments";
+                        textComment.setText(Constants.API_USERNAME + " " + comment);
+                        String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
                     }
 

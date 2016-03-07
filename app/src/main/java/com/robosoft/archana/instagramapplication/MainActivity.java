@@ -25,7 +25,7 @@ import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.AccessToken;
 import com.robosoft.archana.instagramapplication.Modal.AuthWebClient;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
-import com.robosoft.archana.instagramapplication.Modal.Constatns;
+import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.Followers;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             mWebview.setHorizontalScrollBarEnabled(false);
             mWebview.setWebViewClient(new AuthWebClient(MainActivity.this));
             mWebview.getSettings().setJavaScriptEnabled(true);
-            mWebview.loadUrl(Constatns.aurthUrlString);
+            mWebview.loadUrl(Constants.aurthUrlString);
         }
         else{
             SnackBarView.setSnackBar(mCoordinatorLayout);
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
-            recentMediaUrl[i] =  Constatns.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constatns.ACCESSTOKEN;
+            recentMediaUrl[i] =  Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN;
         }
         AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
         asyncTaskGetRecentMedia.execute();
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         int countMediaId = 0;
         for(int i = 0 ;i<commnetsUrl.length;i++){
             MediaDetails mediaDetails = mMediaList.get(i);
-            commnetsUrl[countMediaId] =  Constatns.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constatns.ACCESSTOKEN;
+            commnetsUrl[countMediaId] =  Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
             countMediaId++;
         }
         AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commnetsUrl,mMediaList, mHashMapCommentsDetails);

@@ -2,9 +2,8 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.robosoft.archana.instagramapplication.Modal.Constatns;
+import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
             httpsURLConnection.setDoInput(true);
             httpsURLConnection.setDoOutput(true);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
-            outputStreamWriter.write("&access_token=" + Constatns.ACCESSTOKEN +
+            outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN +
                     "&text=" + mComments);
             outputStreamWriter.flush();
             mResponse = InputStreamtoString.readStream(httpsURLConnection.getInputStream());

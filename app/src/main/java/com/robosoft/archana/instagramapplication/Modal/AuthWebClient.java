@@ -28,7 +28,7 @@ public class AuthWebClient extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-        if (url.startsWith(Constatns.CALLBACK_URL)) {
+        if (url.startsWith(Constants.CALLBACK_URL)) {
             System.out.println(url);
             String parts[] = url.split("=");
             request_token = parts[1];  //This is your request token.

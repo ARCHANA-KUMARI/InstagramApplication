@@ -2,26 +2,19 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.MainActivity;
 import com.robosoft.archana.instagramapplication.Modal.AccessToken;
-import com.robosoft.archana.instagramapplication.Modal.Constatns;
+import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.RequestToken;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -49,16 +42,16 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
     protected List<AccessToken> doInBackground(Void... params) {
 
        try
-        {   URL url = new URL(Constatns.tokenURLString);
+        {   URL url = new URL(Constants.tokenURLString);
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
             httpsURLConnection.setDoInput(true);
             httpsURLConnection.setDoOutput(true);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
-            outputStreamWriter.write("client_id=" + Constatns.CLIENT_ID +
-                    "&client_secret=" + Constatns.CLIENT_SECRET +
+            outputStreamWriter.write("client_id=" + Constants.CLIENT_ID +
+                    "&client_secret=" + Constants.CLIENT_SECRET +
                     "&grant_type=authorization_code" +
-                    "&redirect_uri=" + Constatns.CALLBACK_URL +
+                    "&redirect_uri=" + Constants.CALLBACK_URL +
                     "&code=" + mRequestToken);
             outputStreamWriter.flush();
             String response = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
