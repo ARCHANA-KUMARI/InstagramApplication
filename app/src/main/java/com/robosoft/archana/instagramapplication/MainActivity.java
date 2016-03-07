@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public void sendUserData(List<AccessToken> accessTokens) {
 
         String accessToken = null,id = null;
+
         if(accessTokens.size()==1){
             AccessToken access = accessTokens.get(0);
             Followers followers = new Followers();

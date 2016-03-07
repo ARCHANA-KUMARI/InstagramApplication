@@ -158,9 +158,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     if (!comment.isEmpty()) {
                         TextView textComment = new TextView(mContext);
                         linearLayout.addView(textComment);
+                        mEditComment.setText(" ");
                         textComment.setText(Constants.API_USERNAME + " " + comment);
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
+
                     }
 
                 }
