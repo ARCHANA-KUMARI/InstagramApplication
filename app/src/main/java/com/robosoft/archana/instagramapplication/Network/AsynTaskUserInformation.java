@@ -52,7 +52,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             InputStream inputStream = httpsURLConnection.getInputStream();
             String response = InputStreamtoString.readStream(inputStream);
-
+            Log.i("Hello","Response is"+response);
             JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
             JSONArray jsonArray = jsonObject.getJSONArray("data");
             for (int i = 0; i < jsonArray.length(); i++) {

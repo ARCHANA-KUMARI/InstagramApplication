@@ -51,7 +51,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-
+                Log.i("Hello","Page"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
 
                 JSONArray jsonArray = jsonObject.getJSONArray("data");

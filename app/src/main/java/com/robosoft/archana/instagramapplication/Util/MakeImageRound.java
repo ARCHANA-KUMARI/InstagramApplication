@@ -18,7 +18,7 @@ import android.widget.ImageView;
  */
 public class MakeImageRound extends ImageView {
 
-    public MakeImageRound(Context ctx, AttributeSet attrs) {
+     public MakeImageRound(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
     }
 
@@ -58,20 +58,21 @@ public class MakeImageRound extends ImageView {
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, finalBitmap.getWidth(),
                 finalBitmap.getHeight());
-
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(Color.parseColor("#BAB399"));
+        //to draw circle
+
         canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
                 finalBitmap.getHeight() / 2 + 0.7f,
                 finalBitmap.getWidth() / 2 + 0.1f, paint);
+
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(finalBitmap, rect, rect, paint);
+       canvas.drawBitmap(finalBitmap, rect, rect, paint);
         return output;
     }
-
 
 }
 

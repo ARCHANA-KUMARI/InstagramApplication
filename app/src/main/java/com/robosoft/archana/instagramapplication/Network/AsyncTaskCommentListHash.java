@@ -2,6 +2,7 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
@@ -60,8 +61,6 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
                 HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
                 InputStream inputStream = httpurlConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-
-
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
 
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
