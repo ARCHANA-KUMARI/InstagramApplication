@@ -15,6 +15,8 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        initUi();
+        setUpBackButton();
 
 
 
@@ -27,8 +29,8 @@ public class UserProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void initUi(){
 
+    private void initUi(){
         mToolbar = (Toolbar) findViewById(R.id.toolbarofuser);
     }
     private void setUpBackButton(){
