@@ -2,12 +2,9 @@ package com.robosoft.archana.instagramapplication.fragment;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,24 +22,22 @@ public class SettingFragment extends DialogFragment{
     private EditText mEditComment;
     private Button mButtonOk,mButtonCancel;
     NoOfCommentInterface noOfCommentInterface;
-
+    private static final String NO_OF_SETTING_COMMENTS = "noOfSetComments";
     public SettingFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-         View view  = inflater.inflate(R.layout.fragment_setting, container, false);
+          View view  = inflater.inflate(R.layout.fragment_setting, container, false);
           mEditComment = (EditText) view.findViewById(R.id.editcomment);
           mButtonOk = (Button)view.findViewById(R.id.btn);
           mButtonCancel = (Button)view.findViewById(R.id.cancel);
           getDialog().setTitle(R.string.dialogtitle);
           return  view;
-
     }
 
     @Override
@@ -54,6 +49,8 @@ public class SettingFragment extends DialogFragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mEditComment.setText(String.valueOf(getArguments().getInt(NO_OF_SETTING_COMMENTS)));
         mButtonOk.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -64,10 +61,9 @@ public class SettingFragment extends DialogFragment{
                     noOfCommentInterface.onClick(noOfComments);
                     dismiss();
                 }
-
-
             }
         });
+
         mButtonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,9 +1,11 @@
 package com.robosoft.archana.instagramapplication.Modal;
 
+import java.io.Serializable;
+
 /**
  * Created by archana on 26/2/16.
  */
-public class MediaDetails {
+public class MediaDetails implements Serializable{
     public String getmUserName() {
         return mUserName;
     }

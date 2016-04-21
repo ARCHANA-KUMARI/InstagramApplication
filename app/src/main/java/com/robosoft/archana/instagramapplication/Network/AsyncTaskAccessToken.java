@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
+import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
 import com.robosoft.archana.instagramapplication.MainActivity;
 import com.robosoft.archana.instagramapplication.Modal.AccessToken;
 import com.robosoft.archana.instagramapplication.Modal.Constants;
@@ -22,18 +23,25 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 24/2/16.
  */
-public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>> {
+public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken>> {
     RequestToken requestToken;
     private Context mContext;
     private List<AccessToken> mList;
     Communicator communicator;
     private String mRequestToken;
+    TaskListener taskListener;
 
-    public AsyncTaskAccessToken(MainActivity mContext ,List<AccessToken> mList,String requesttoken) {
+    @Override
+    protected void onPreExecute() {
+        taskListener.onStartTask();
+    }
+
+    public AsyncTaskAccessToken(MainActivity mContext, List<AccessToken> mList, String requesttoken) {
         this.mContext = mContext;
+        taskListener = (TaskListener) mContext;
         requestToken = new RequestToken();
         this.mList = mList;
-        this. mRequestToken = requesttoken;
+        this.mRequestToken = requesttoken;
         this.communicator = (Communicator) mContext;
 
     }
@@ -41,8 +49,8 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
     @Override
     protected List<AccessToken> doInBackground(Void... params) {
 
-       try
-        {   URL url = new URL(Constants.tokenURLString);
+        try {
+            URL url = new URL(Constants.tokenURLString);
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             httpsURLConnection.setRequestMethod("POST");
             httpsURLConnection.setDoInput(true);
@@ -65,9 +73,7 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
             accessTokenClassObject.setmUserName(jsonObject.getJSONObject("user").getString("username"));
             accessTokenClassObject.setmProfilePicUrl(jsonObject.getJSONObject("user").getString("profile_picture"));
             mList.add(accessTokenClassObject);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -75,16 +81,11 @@ public class AsyncTaskAccessToken extends AsyncTask<Void,Void,List<AccessToken>>
     }
 
 
-
     @Override
     protected void onPostExecute(List<AccessToken> accessTokens) {
         super.onPostExecute(accessTokens);
         communicator.sendUserData(accessTokens);
-
-
     }
-
-
 
 
 }

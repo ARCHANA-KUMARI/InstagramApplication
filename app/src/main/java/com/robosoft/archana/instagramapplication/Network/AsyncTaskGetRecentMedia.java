@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
-import com.robosoft.archana.instagramapplication.Modal.Followers;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
 
@@ -51,7 +50,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-                Log.i("Hello","Page"+response);
+               // Log.i("Hello","Page"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
 
                 JSONArray jsonArray = jsonObject.getJSONArray("data");

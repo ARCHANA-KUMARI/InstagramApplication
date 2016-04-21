@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * Created by archana on 29/2/16.
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.CommentViewHolder> {
+public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecyclAdapter.CommentViewHolder> {
 
     private Context mContext;
     private View mOneRow;
@@ -44,7 +44,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     int noOfComments;
 
-    public RecyclerViewAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mMedeiaDetailsList = mMedeiaDetailsList;
         this.mLrucache = mLrucache;
@@ -59,9 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mMedeiaKeyList.add(keyname);
             ArrayList<CommentDetails> arrayList = (ArrayList<CommentDetails>) pairs.getValue();
             mMediaCommentValueList.add(arrayList);
-
         }
-
     }
 
     @Override
@@ -106,6 +104,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         }
 
+        holder.mEditComment.setHint(R.string.addcommentedit);
+        holder.mCommentButton.setImageResource(R.drawable.comment);
+
+
     }
 
     @Override
@@ -127,7 +129,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private ImageButton mCommentButton;
         private TextView mTextComment,mTextUserName,mTextLocation;
         String mediaId;
-        LinearLayout linearLayout;
+        LinearLayout linearLayout,layoutwo;
         ArrayList<TextView> arrayList = new ArrayList<>();
         int position;
 
@@ -140,8 +142,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mTextLocation = (TextView)itemView.findViewById(R.id.location);
             mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.lay);
-            mEditComment = (EditText) itemView.findViewById(R.id.comment);
 
+            mEditComment = (EditText) itemView.findViewById(R.id.comment);
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
             this.position = position;
@@ -151,6 +153,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 arrayList.add(mTextComment);
 
             }
+
             mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
