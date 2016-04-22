@@ -46,12 +46,13 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
         for (int i = 0; i < mUrl.length; i++) {
             URL url = null;
             try {
+                Log.i("Hello","I AM IN AsyncTask Class");
                 url = new URL(mUrl[i]);
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-                Log.i("Hello","Page"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
+                // For pagenation
                 JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
                 if(!jsonPagObj.isNull("next_url")){
                     String next_Url = jsonPagObj.getString("next_url");

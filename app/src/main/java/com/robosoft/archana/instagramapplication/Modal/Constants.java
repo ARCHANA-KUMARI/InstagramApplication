@@ -6,6 +6,7 @@ package com.robosoft.archana.instagramapplication.Modal;
 public class Constants {
 
     public static final String CLIENT_ID = "289b08f3184e49c99992b8e46899abd4";
+    public static final String NO_OF_MEDIA_LOADED_AT_ONE_TIME = "&count=10";
     public static final String CLIENT_SECRET = "4335b56123ed456e99cf0850437f7021";
     public static final String CALLBACK_URL = "https://www.google.co.in";
     //Authentication

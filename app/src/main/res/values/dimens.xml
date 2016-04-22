@@ -12,5 +12,6 @@
     <dimen name="textsize">15sp</dimen>
     <dimen name="gap">45dp</dimen>
     <dimen name="topmargin">20sp</dimen>
+    <dimen name="margin">10dp</dimen>
 
 </resources>
