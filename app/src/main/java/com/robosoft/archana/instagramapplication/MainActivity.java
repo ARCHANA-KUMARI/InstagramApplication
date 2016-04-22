@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private static final String HASHMAP ="HashMap";
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                 mWebview.setWebViewClient(new AuthWebClient(MainActivity.this));
                 mWebview.getSettings().setJavaScriptEnabled(true);
                 mWebview.loadUrl(Constants.aurthUrlString);
+              //  mWebview.setVisibility(View.GONE);
             }
         }
         else{
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
              mInstagramRecyclAdapter.notifyDataSetChanged();
             }
         });*/
+        mSwiper.setVisibility(View.VISIBLE);
 
     }
 
@@ -157,8 +160,11 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
         mWebview = (WebView) findViewById(R.id.webview);
-      //  mSwiper = (SwipeRefreshLayout) findViewById(R.id.swiper);
+      mSwiper = (SwipeRefreshLayout) findViewById(R.id.swiper);
         mRecycler = (RecyclerView)findViewById(R.id.recycler);
+//        mSwiper.setVisibility(View.VISIBLE);
+//        mRecycler.setVisibility(View.VISIBLE);
+
 
     }
     @Override
@@ -190,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
-            recentMediaUrl[i] =  Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN;
+            recentMediaUrl[i] =  Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+"&count=10";
         }
         AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
         asyncTaskGetRecentMedia.execute();
@@ -255,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     }
    private void setInstagramRecyclAdapter(){
-
+        mWebview.setVisibility(View.GONE);
         mInstagramRecyclAdapter = new InstagramRecyclAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

@@ -70,6 +70,7 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
             accessTokenClassObject.setmAccessToken(accessTokenString);
             accessTokenClassObject.setmUserFull_Name(jsonObject.getJSONObject("user").getString("full_name"));
             accessTokenClassObject.setmUserId(jsonObject.getJSONObject("user").getString("id"));
+          //  Log.i("Hello","User is is"+jsonObject.getJSONObject("user").getString("id"));
             accessTokenClassObject.setmUserName(jsonObject.getJSONObject("user").getString("username"));
             accessTokenClassObject.setmProfilePicUrl(jsonObject.getJSONObject("user").getString("profile_picture"));
             mList.add(accessTokenClassObject);

@@ -50,15 +50,18 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-               // Log.i("Hello","Page"+response);
+                Log.i("Hello","Page"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-
+                JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
+                if(!jsonPagObj.isNull("next_url")){
+                    String next_Url = jsonPagObj.getString("next_url");
+                }
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
-
                 for (int j = 0; j < jsonArray.length(); j++) {
 
                     JSONObject jsonSubObject = jsonArray.getJSONObject(j);
                     MediaDetails mediaDetails = new MediaDetails();
+
                     if (!jsonSubObject.isNull("comments")) {
                         JSONObject commentObject = jsonSubObject.getJSONObject("comments");
 
@@ -71,7 +74,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                         JSONObject likeObject = jsonSubObject.getJSONObject("likes");
                         String likesCount = likeObject.getString("count");
                         mediaDetails.setmLikeCounts(likesCount);
-
 
                     }
 
@@ -89,7 +91,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                             mediaDetails.setmCaption(text);
 
                         }
-
                     }
 
                     if (!jsonSubObject.isNull("id")) {
@@ -105,8 +106,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                     }
 
                     if(!jsonSubObject.isNull("location")){
-                        Log.i("Hello","I am in if location block");
-                        JSONObject locationObject = jsonSubObject.getJSONObject("location");
+                         JSONObject locationObject = jsonSubObject.getJSONObject("location");
                          mediaDetails.setmLocation(locationObject.getString("name"));
 
                     }
@@ -122,7 +122,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
             }
 
         }
-
         return mediaDetailsList;
     }
 

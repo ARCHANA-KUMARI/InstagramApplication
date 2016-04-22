@@ -11,6 +11,7 @@ import com.robosoft.archana.instagramapplication.R;
 public class UserProfileActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,9 +19,8 @@ public class UserProfileActivity extends AppCompatActivity {
         initUi();
         setUpBackButton();
 
-
-
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
@@ -28,13 +28,10 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(menuItem);
     }
-
-
     private void initUi(){
         mToolbar = (Toolbar) findViewById(R.id.toolbarofuser);
     }
     private void setUpBackButton(){
-
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
