@@ -67,8 +67,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
-      /*  Log.i("Hello","MediaDetailsList Size is"+mMedeiaDetailsList.size());
-        Log.i("Hello","Comment list size is"+mTempCommentListValueList.size());*/
         if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
