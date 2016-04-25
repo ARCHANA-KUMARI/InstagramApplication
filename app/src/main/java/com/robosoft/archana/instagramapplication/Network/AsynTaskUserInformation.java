@@ -57,9 +57,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
                 JSONObject jsonSubObject = jsonArray.getJSONObject(i);
                 Followers followers = new Followers();
                 followers.setmFollowsUserName(jsonSubObject.getString("username"));
-
                 followers.setmFollowsUserId(jsonSubObject.getString("id"));
-
                 mFollowersList.add(followers);
             }
 

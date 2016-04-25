@@ -91,33 +91,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setSupportActionBar(mToolbar);
         mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
         mEditor = mSharedPreference.edit();
-
-        if(NetworkStatus.isNetworkAvailable(this)){
-
-            if(savedInstanceState == null){
-                mWebview.loadUrl(getResources().getString(R.string.loginpageurl));
-                mWebview.setVerticalScrollBarEnabled(false);
-                mWebview.setHorizontalScrollBarEnabled(false);
-                mWebview.setWebViewClient(new AuthWebClient(MainActivity.this));
-                mWebview.getSettings().setJavaScriptEnabled(true);
-                mWebview.loadUrl(Constants.aurthUrlString);
-
-            }
-        }
-        else{
-            SnackBarView.setSnackBar(mCoordinatorLayout);
-             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-             fab.setVisibility(View.VISIBLE);
-             fab.setOnClickListener(new View.OnClickListener() {
-                 @Override
-                 public void onClick(View view) {
-                     SnackBarView.setSnackBar(view);
-                 }
-             });
-        }
-
+        loadInstagramHomePage();
         mSwiper.setOnRefreshListener(this);
-
     }
 
     private void loadInstagramHomePage(){
@@ -248,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setInstagramRecyclAdapter();
     }
 
-
     @Override
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
 
@@ -298,16 +272,15 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void onRefresh() {
 
-        
-        Log.i("Hello","onRefresh is Called"+count+"Time");
-        count++;
         if(NetworkStatus.isNetworkAvailable(this)){
-            if(mMedeiaDetailsList!=null){
-              mMedeiaDetailsList.clear();
+            if(mMedeiaDetailsList.size()>0){
+                mMedeiaDetailsList.clear();
             }
             AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
             asyncTaskGetRecentMedia.execute();
-            //// TODO: 22/4/16  
+            Log.i("Hello"," Aftrerrrrrrrr MediaListSize is"+mMedeiaDetailsList.size());
+            //// TODO: 22/4/16
+            Log.i("Hello","Size of HashMap is"+mHashMapCommentsDetails.size());
             AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commnetsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
             asyncTaskCommentListHash.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
