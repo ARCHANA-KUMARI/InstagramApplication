@@ -2,6 +2,7 @@ package com.robosoft.archana.instagramapplication.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.LruCache;
@@ -96,12 +97,14 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 holder.mTextComment = (TextView) holder.arrayList.get(i);
                 CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
                 holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
+                holder.mTextComment.setTypeface(null, Typeface.BOLD);
             }
         } else {
                 for (int i = 0; i < mTempCommentListValueList.size(); i++) {
                 holder.mTextComment = (TextView) holder.arrayList.get(i);
-                CommentDetails commentDetails = mTempCommentListValueList.get(i);
-                holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
+                CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
+                holder.mTextComment.setText(commentDetails.getmWhoCommented() + " : " + commentDetails.getmCommentText());
+                holder.mTextComment.setTypeface(null, Typeface.BOLD);
             }
         }
 

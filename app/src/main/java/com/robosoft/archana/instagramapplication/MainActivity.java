@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     private int mNoOfFollowers,mNoOfFollowing,mNoOfPost;
 
-    String recentMediaUrl[],commnetsUrl[];
+    String recentMediaUrl[],commentsUrl[];
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
 
@@ -204,14 +204,14 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public void sendMediaId(List<MediaDetails> mMediaList,int sizeOfId) {
 
         mMedeiaDetailsList = mMediaList;
-        commnetsUrl = new String[sizeOfId];
+        commentsUrl = new String[sizeOfId];
         int countMediaId = 0;
-        for(int i = 0 ;i<commnetsUrl.length;i++){
+        for(int i = 0 ;i<commentsUrl.length;i++){
             MediaDetails mediaDetails = mMediaList.get(i);
-            commnetsUrl[countMediaId] = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
+            commentsUrl[countMediaId] = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
             countMediaId++;
         }
-        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commnetsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
+        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
         asyncTaskCommentListHash.execute();
 
     }
@@ -274,14 +274,20 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
         if(NetworkStatus.isNetworkAvailable(this)){
             if(mMedeiaDetailsList.size()>0){
+                Log.i("Hello","I am in if condition of mMediaDetailsList");
                 mMedeiaDetailsList.clear();
             }
+            if(mHashMapCommentsDetails.size()>0){
+                Log.i("Hello","I am in if condition of mHash");
+                mHashMapCommentsDetails.clear();
+            }
+            progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
             AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
             asyncTaskGetRecentMedia.execute();
             Log.i("Hello"," Aftrerrrrrrrr MediaListSize is"+mMedeiaDetailsList.size());
             //// TODO: 22/4/16
             Log.i("Hello","Size of HashMap is"+mHashMapCommentsDetails.size());
-            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commnetsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
+            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
             asyncTaskCommentListHash.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
             mInstagramRecyclAdapter.notifyDataSetChanged();
