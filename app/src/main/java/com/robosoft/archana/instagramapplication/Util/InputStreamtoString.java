@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
  */
 public class InputStreamtoString {
     public static  String readStream(InputStream inputStream) {
-     //   Log.i("Hello", "I AM IN READsTREAM METHOD");
         StringBuffer stringBuffer = new StringBuffer();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line = null;

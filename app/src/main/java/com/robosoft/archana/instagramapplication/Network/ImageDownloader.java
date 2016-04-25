@@ -3,7 +3,6 @@ package com.robosoft.archana.instagramapplication.Network;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.util.LruCache;
 import android.widget.ImageView;
 
@@ -25,7 +24,6 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
     private ImageView mImage;
 
     public ImageDownloader(LruCache<String, Bitmap> lruCache, String urladdress, ImageView mImage) {
-     //   Log.i("Hello", "I am in imageDownloader constructor");
         this.urladdress = urladdress;
         this.mImage = mImage;
         this.mMemoryCache = lruCache;
@@ -35,7 +33,7 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
     protected Bitmap doInBackground(Void... params) {
         try {
             URL url = new URL(urladdress);
-          //  Log.i("Hello","***************URL UIS"+url);
+          //  Log.i("Hello","Url of profile pic in ImageDownloader Class......"+url);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = httpURLConnection.getInputStream();
             mPic = BitmapFactory.decodeStream(inputStream);
@@ -51,7 +49,6 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         super.onPostExecute(bitmap);
-      //  Log.i("Hello","I AM IN onPostExecute method");
         mImage.setImageBitmap(bitmap);
 
     }

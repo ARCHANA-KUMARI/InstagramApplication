@@ -5,26 +5,34 @@
     tools:context="com.robosoft.archana.instagramapplication.fragment.SettingFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Number of Comments"
-        android:id="@+id/textcomment"
-       />
-   <EditText
-       android:layout_toRightOf="@id/textcomment"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:hint="Enter no of comments"
-       android:id="@+id/editcomment"/>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/textinput"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="@string/hintofeditcomment"
+            android:id="@+id/editcomment"/>
+    </android.support.design.widget.TextInputLayout>
     <Button
         android:background="?android:attr/selectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn"
-        android:layout_below="@id/editcomment"
-        android:gravity="center"
-        android:text="Dismiss"
+        android:layout_below="@id/textinput"
+        android:text="Set"
+        android:textAllCaps="false"
+        android:layout_centerInParent="true"/>
+    <Button
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/btn"
+        android:layout_below="@id/textinput"
+        android:text="Cancel"
+        android:id="@+id/cancel"
         android:textAllCaps="false"
         android:layout_centerInParent="true"/>
 </RelativeLayout>

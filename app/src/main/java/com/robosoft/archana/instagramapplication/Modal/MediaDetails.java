@@ -1,14 +1,40 @@
 package com.robosoft.archana.instagramapplication.Modal;
 
+import java.io.Serializable;
+
 /**
  * Created by archana on 26/2/16.
  */
-public class MediaDetails {
+public class MediaDetails implements Serializable{
 
-    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId;
+    public String getmUserName() {
+        return mUserName;
+    }
+
+    public void setmUserName(String mUserName) {
+        this.mUserName = mUserName;
+    }
+
+    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation,mPagenation_nextUrl;
+
+    public String getmLocation() {
+        return mLocation;
+    }
+
+    public void setmLocation(String mLocation) {
+        this.mLocation = mLocation;
+    }
 
     public String getmCommentsCount() {
         return mCommentsCount;
+    }
+
+    public String getmPagenation_nextUrl() {
+        return mPagenation_nextUrl;
+    }
+
+    public void setmPagenation_nextUrl(String mPagenation_nextUrl) {
+        this.mPagenation_nextUrl = mPagenation_nextUrl;
     }
 
     public void setmCommentsCount(String mCommentsCount) {
@@ -41,6 +67,14 @@ public class MediaDetails {
 
     public String getmMediaId() {
         return mMediaId;
+    }
+
+    public String getmProfilePic() {
+        return mProfilePic;
+    }
+
+    public void setmProfilePic(String mProfilePic) {
+        this.mProfilePic = mProfilePic;
     }
 
     public void setmMediaId(String mMediaId) {
