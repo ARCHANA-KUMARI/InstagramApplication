@@ -77,13 +77,9 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
                             commentDetails.setmWhoCommented(whocommented);
                         }
                     }
-
                     arrayList.add(commentDetails);
-
-
                 }
                 hashMap.put(mediaDetails.getmMediaId(), arrayList);
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

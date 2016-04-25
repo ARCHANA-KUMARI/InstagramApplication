@@ -2,8 +2,8 @@ package com.robosoft.archana.instagramapplication.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -94,18 +94,17 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         mTempCommentListValueList = mMediaCommentValueList.get(position);
         if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()) {
             for (int i = 0; i < noOfComments; i++) {
-                holder.mTextComment = (TextView) holder.arrayList.get(i);
+                holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
                 CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
-                holder.mTextComment.setTypeface(null, Typeface.BOLD);
+                holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
             }
         } else {
                 for (int i = 0; i < mTempCommentListValueList.size(); i++) {
-                holder.mTextComment = (TextView) holder.arrayList.get(i);
-                CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                holder.mTextComment.setText(commentDetails.getmWhoCommented() + " : " + commentDetails.getmCommentText());
-                holder.mTextComment.setTypeface(null, Typeface.BOLD);
-            }
+                    holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
+                    CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
+                 //   holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                    holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                }
         }
 
         holder.mEditComment.setHint(R.string.addcommentedit);
@@ -131,10 +130,12 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         private TextView mTextDescription;
         private EditText mEditComment;
         private ImageButton mCommentButton;
-        private TextView mTextComment,mTextUserName,mTextLocation;
+        private TextView mTextComment;
+        private TextView mTextUserName;
+        private TextView mTextLocation;
         String mediaId;
         LinearLayout linearLayout;
-        ArrayList<TextView> arrayList = new ArrayList<>();
+        ArrayList<TextView> CommentListTextView = new ArrayList<>();
         int position;
 
         public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final String mediaId) {
@@ -145,7 +146,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             mTextUserName = (TextView) itemView.findViewById(R.id.username);
             mTextLocation = (TextView)itemView.findViewById(R.id.location);
             mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
-            linearLayout = (LinearLayout) itemView.findViewById(R.id.lay);
+            linearLayout = (LinearLayout) itemView.findViewById(R.id.commentlayout);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
@@ -153,10 +154,8 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             for (int i = 0; i < noOfCommentTextView; i++) {
                 mTextComment = new TextView(mContext);
                 linearLayout.addView(mTextComment);
-                arrayList.add(mTextComment);
-
+                CommentListTextView.add( mTextComment);
             }
-
             mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

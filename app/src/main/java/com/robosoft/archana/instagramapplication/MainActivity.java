@@ -274,19 +274,14 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
         if(NetworkStatus.isNetworkAvailable(this)){
             if(mMedeiaDetailsList.size()>0){
-                Log.i("Hello","I am in if condition of mMediaDetailsList");
                 mMedeiaDetailsList.clear();
             }
             if(mHashMapCommentsDetails.size()>0){
-                Log.i("Hello","I am in if condition of mHash");
                 mHashMapCommentsDetails.clear();
             }
             progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
             AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
             asyncTaskGetRecentMedia.execute();
-            Log.i("Hello"," Aftrerrrrrrrr MediaListSize is"+mMedeiaDetailsList.size());
-            //// TODO: 22/4/16
-            Log.i("Hello","Size of HashMap is"+mHashMapCommentsDetails.size());
             AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
             asyncTaskCommentListHash.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
