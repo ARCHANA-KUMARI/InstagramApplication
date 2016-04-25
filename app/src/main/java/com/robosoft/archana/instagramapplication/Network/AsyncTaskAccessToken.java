@@ -51,29 +51,31 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
 
         try {
             URL url = new URL(Constants.tokenURLString);
-            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-            httpsURLConnection.setRequestMethod("POST");
-            httpsURLConnection.setDoInput(true);
-            httpsURLConnection.setDoOutput(true);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
-            outputStreamWriter.write("client_id=" + Constants.CLIENT_ID +
-                    "&client_secret=" + Constants.CLIENT_SECRET +
-                    "&grant_type=authorization_code" +
-                    "&redirect_uri=" + Constants.CALLBACK_URL +
-                    "&code=" + mRequestToken);
-            outputStreamWriter.flush();
-            String response = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
-            JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-            String accessTokenString = jsonObject.getString("access_token"); //Here is your ACCESS TOKEN
-            //Create object of AccessToken class
-            AccessToken accessTokenClassObject = new AccessToken();
-            accessTokenClassObject.setmAccessToken(accessTokenString);
-            accessTokenClassObject.setmUserFull_Name(jsonObject.getJSONObject("user").getString("full_name"));
-            accessTokenClassObject.setmUserId(jsonObject.getJSONObject("user").getString("id"));
-          //  Log.i("Hello","User is is"+jsonObject.getJSONObject("user").getString("id"));
-            accessTokenClassObject.setmUserName(jsonObject.getJSONObject("user").getString("username"));
-            accessTokenClassObject.setmProfilePicUrl(jsonObject.getJSONObject("user").getString("profile_picture"));
-            mList.add(accessTokenClassObject);
+            if(url!=null) {
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.setDoInput(true);
+                httpsURLConnection.setDoOutput(true);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
+                outputStreamWriter.write("client_id=" + Constants.CLIENT_ID +
+                        "&client_secret=" + Constants.CLIENT_SECRET +
+                        "&grant_type=authorization_code" +
+                        "&redirect_uri=" + Constants.CALLBACK_URL +
+                        "&code=" + mRequestToken);
+                outputStreamWriter.flush();
+                String response = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
+                JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
+                String accessTokenString = jsonObject.getString("access_token"); //Here is your ACCESS TOKEN
+                //Create object of AccessToken class
+                AccessToken accessTokenClassObject = new AccessToken();
+                accessTokenClassObject.setmAccessToken(accessTokenString);
+                accessTokenClassObject.setmUserFull_Name(jsonObject.getJSONObject("user").getString("full_name"));
+                accessTokenClassObject.setmUserId(jsonObject.getJSONObject("user").getString("id"));
+                //  Log.i("Hello","User is is"+jsonObject.getJSONObject("user").getString("id"));
+                accessTokenClassObject.setmUserName(jsonObject.getJSONObject("user").getString("username"));
+                accessTokenClassObject.setmProfilePicUrl(jsonObject.getJSONObject("user").getString("profile_picture"));
+                mList.add(accessTokenClassObject);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

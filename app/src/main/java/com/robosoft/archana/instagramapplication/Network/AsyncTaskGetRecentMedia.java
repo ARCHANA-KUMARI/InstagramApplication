@@ -44,17 +44,18 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
 
         for (int i = 0; i < mUrl.length; i++) {
-            URL url = null;
+            URL url;
             try {
-                Log.i("Hello","I AM IN AsyncTask Class");
+                Log.i("Hello", "I AM IN AsyncTask Class");
                 url = new URL(mUrl[i]);
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                if (url != null) {
+                    HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
                 // For pagenation
                 JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
-                if(!jsonPagObj.isNull("next_url")){
+                if (!jsonPagObj.isNull("next_url")) {
                     String next_Url = jsonPagObj.getString("next_url");
                 }
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -100,19 +101,20 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                         mSizeOfId++;
                     }
 
-                    if(!jsonSubObject.isNull("user")){
+                    if (!jsonSubObject.isNull("user")) {
                         JSONObject userObject = jsonSubObject.getJSONObject("user");
                         mediaDetails.setmUserName(userObject.getString("username"));
                         mediaDetails.setmProfilePic(userObject.getString("profile_picture"));
                     }
 
-                    if(!jsonSubObject.isNull("location")){
-                         JSONObject locationObject = jsonSubObject.getJSONObject("location");
-                         mediaDetails.setmLocation(locationObject.getString("name"));
+                    if (!jsonSubObject.isNull("location")) {
+                        JSONObject locationObject = jsonSubObject.getJSONObject("location");
+                        mediaDetails.setmLocation(locationObject.getString("name"));
 
                     }
                     mediaDetailsList.add(mediaDetails);
                 }
+            }
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

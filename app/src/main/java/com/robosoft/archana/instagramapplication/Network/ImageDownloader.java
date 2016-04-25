@@ -27,17 +27,17 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
         this.urladdress = urladdress;
         this.mImage = mImage;
         this.mMemoryCache = lruCache;
-
     }
     @Override
     protected Bitmap doInBackground(Void... params) {
         try {
             URL url = new URL(urladdress);
-          //  Log.i("Hello","Url of profile pic in ImageDownloader Class......"+url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = httpURLConnection.getInputStream();
-            mPic = BitmapFactory.decodeStream(inputStream);
-            mMemoryCache.put(urladdress, mPic);
+            if(url!=null) {
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                mPic = BitmapFactory.decodeStream(inputStream);
+                mMemoryCache.put(urladdress, mPic);
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

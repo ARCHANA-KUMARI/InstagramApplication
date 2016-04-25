@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,8 +67,8 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
-        Log.i("Hello","MediaDetailsList Size is"+mMedeiaDetailsList.size());
-        Log.i("Hello","Comment list size is"+mTempCommentListValueList.size());
+      /*  Log.i("Hello","MediaDetailsList Size is"+mMedeiaDetailsList.size());
+        Log.i("Hello","Comment list size is"+mTempCommentListValueList.size());*/
         if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
@@ -83,7 +82,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     @Override
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
 
-       // Log.i("Hello","I am on bindviewHOLDER");
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
         holder.mTextDescription.setText(mediaDetails.getmCaption());
@@ -162,12 +160,11 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                     String comment = mEditComment.getText().toString();
                     if (!comment.isEmpty()) {
                         TextView textComment = new TextView(mContext);
-                        linearLayout.addView(textComment);
+                        linearLayout.addView(textComment,0);
                         mEditComment.setText(" ");
                         textComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+Constants.API_USERNAME+":"+"</b>"+ "  " + "<small>"+comment+"</small>"));
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
-
                     }
 
                 }

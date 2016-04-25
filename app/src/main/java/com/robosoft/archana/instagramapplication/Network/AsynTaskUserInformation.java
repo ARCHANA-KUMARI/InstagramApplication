@@ -46,19 +46,21 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
         try {
             //Getting Follewers`S ID AND Name
             URL url = new URL(mUrl);
-            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-            InputStream inputStream = httpsURLConnection.getInputStream();
-            String response = InputStreamtoString.readStream(inputStream);
+            if(url!=null) {
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                InputStream inputStream = httpsURLConnection.getInputStream();
+                String response = InputStreamtoString.readStream(inputStream);
 
 
-            JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-            JSONArray jsonArray = jsonObject.getJSONArray("data");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonSubObject = jsonArray.getJSONObject(i);
-                Followers followers = new Followers();
-                followers.setmFollowsUserName(jsonSubObject.getString("username"));
-                followers.setmFollowsUserId(jsonSubObject.getString("id"));
-                mFollowersList.add(followers);
+                JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
+                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+                    Followers followers = new Followers();
+                    followers.setmFollowsUserName(jsonSubObject.getString("username"));
+                    followers.setmFollowsUserId(jsonSubObject.getString("id"));
+                    mFollowersList.add(followers);
+                }
             }
 
         } catch (MalformedURLException e) {

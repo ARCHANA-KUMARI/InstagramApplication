@@ -33,15 +33,17 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
         URL url = null;
         try {
             url = new URL(params[0]);
-            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-            httpsURLConnection.setRequestMethod("POST");
-            httpsURLConnection.setDoInput(true);
-            httpsURLConnection.setDoOutput(true);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
-            outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN +
-                    "&text=" + mComments);
-            outputStreamWriter.flush();
-            mResponse = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
+            if(url!=null) {
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.setDoInput(true);
+                httpsURLConnection.setDoOutput(true);
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
+                outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN +
+                        "&text=" + mComments);
+                outputStreamWriter.flush();
+                mResponse = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
+            }
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

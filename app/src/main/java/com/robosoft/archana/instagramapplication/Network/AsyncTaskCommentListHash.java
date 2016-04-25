@@ -56,30 +56,32 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
             try {
 
                 URL urlComment = new URL(mUrl[i]);
-                MediaDetails mediaDetails = mediaDetailsList.get(i);
-                HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
-                InputStream inputStream = httpurlConnection.getInputStream();
-                String response = InputStreamtoString.readStream(inputStream);
-                JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
+                if(urlComment!=null) {
+                    MediaDetails mediaDetails = mediaDetailsList.get(i);
+                    HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
+                    InputStream inputStream = httpurlConnection.getInputStream();
+                    String response = InputStreamtoString.readStream(inputStream);
+                    JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
 
-                JSONArray jsonArray = jsonObject.getJSONArray("data");
-                for (int j = 0; j < jsonArray.length(); j++) {
-                    CommentDetails commentDetails = new CommentDetails();
-                    JSONObject subObject = jsonArray.getJSONObject(j);
-                    if (!subObject.isNull("text")) {
-                        String commentText = subObject.getString("text");
-                        commentDetails.setmCommentText(commentText);
-                    }
-                    if (!subObject.isNull("from")) {
-                        if (subObject.has("from")) {
-                            JSONObject fromObject = subObject.getJSONObject("from");
-                            String whocommented = fromObject.getString("username");
-                            commentDetails.setmWhoCommented(whocommented);
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int j = 0; j < jsonArray.length(); j++) {
+                        CommentDetails commentDetails = new CommentDetails();
+                        JSONObject subObject = jsonArray.getJSONObject(j);
+                        if (!subObject.isNull("text")) {
+                            String commentText = subObject.getString("text");
+                            commentDetails.setmCommentText(commentText);
                         }
+                        if (!subObject.isNull("from")) {
+                            if (subObject.has("from")) {
+                                JSONObject fromObject = subObject.getJSONObject("from");
+                                String whocommented = fromObject.getString("username");
+                                commentDetails.setmWhoCommented(whocommented);
+                            }
+                        }
+                        arrayList.add(commentDetails);
                     }
-                    arrayList.add(commentDetails);
+                    hashMap.put(mediaDetails.getmMediaId(), arrayList);
                 }
-                hashMap.put(mediaDetails.getmMediaId(), arrayList);
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
