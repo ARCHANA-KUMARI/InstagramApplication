@@ -1,9 +1,12 @@
 package com.robosoft.archana.instagramapplication.Modal;
 
+import java.io.Serializable;
+
 /**
  * Created by archana on 26/2/16.
  */
-public class MediaDetails {
+public class MediaDetails implements Serializable{
+
     public String getmUserName() {
         return mUserName;
     }
@@ -12,7 +15,7 @@ public class MediaDetails {
         this.mUserName = mUserName;
     }
 
-    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation;
+    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation,mPagenation_nextUrl;
 
     public String getmLocation() {
         return mLocation;
@@ -24,6 +27,14 @@ public class MediaDetails {
 
     public String getmCommentsCount() {
         return mCommentsCount;
+    }
+
+    public String getmPagenation_nextUrl() {
+        return mPagenation_nextUrl;
+    }
+
+    public void setmPagenation_nextUrl(String mPagenation_nextUrl) {
+        this.mPagenation_nextUrl = mPagenation_nextUrl;
     }
 
     public void setmCommentsCount(String mCommentsCount) {

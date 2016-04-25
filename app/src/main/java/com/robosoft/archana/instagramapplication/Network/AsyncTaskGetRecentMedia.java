@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
-import com.robosoft.archana.instagramapplication.Modal.Followers;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
 
@@ -47,19 +46,23 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
         for (int i = 0; i < mUrl.length; i++) {
             URL url = null;
             try {
+                Log.i("Hello","I AM IN AsyncTask Class");
                 url = new URL(mUrl[i]);
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
-                Log.i("Hello","Page"+response);
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-
+                // For pagenation
+                JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
+                if(!jsonPagObj.isNull("next_url")){
+                    String next_Url = jsonPagObj.getString("next_url");
+                }
                 JSONArray jsonArray = jsonObject.getJSONArray("data");
-
                 for (int j = 0; j < jsonArray.length(); j++) {
 
                     JSONObject jsonSubObject = jsonArray.getJSONObject(j);
                     MediaDetails mediaDetails = new MediaDetails();
+
                     if (!jsonSubObject.isNull("comments")) {
                         JSONObject commentObject = jsonSubObject.getJSONObject("comments");
 
@@ -72,7 +75,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                         JSONObject likeObject = jsonSubObject.getJSONObject("likes");
                         String likesCount = likeObject.getString("count");
                         mediaDetails.setmLikeCounts(likesCount);
-
 
                     }
 
@@ -90,7 +92,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                             mediaDetails.setmCaption(text);
 
                         }
-
                     }
 
                     if (!jsonSubObject.isNull("id")) {
@@ -106,8 +107,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                     }
 
                     if(!jsonSubObject.isNull("location")){
-                        Log.i("Hello","I am in if location block");
-                        JSONObject locationObject = jsonSubObject.getJSONObject("location");
+                         JSONObject locationObject = jsonSubObject.getJSONObject("location");
                          mediaDetails.setmLocation(locationObject.getString("name"));
 
                     }
@@ -123,7 +123,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
             }
 
         }
-
         return mediaDetailsList;
     }
 

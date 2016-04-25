@@ -1,10 +1,20 @@
 <resources>
     <string name="app_name">Assignment</string>
     <string name="action_settings">Settings</string>
-
+     <string name="user_profile">User Profile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loginpageurl">https://www.instagram.com/accounts/login/?force_classic_login</string>
     <string name="dialogtitle">Comment Setting</string>
     <string name="hintofeditcomment">Set number of comments to display</string>
     <string name="addcommentedit">Add a comment...</string>
+    <string name="title_activity_user_profile">UserProfileActivity</string>
+    <string name="noofpost">5</string>
+    <string name="post">Posts</string>
+    <string name="nooffollowers">4</string>
+    <string name="followers">Followers</string>
+    <string name="nooffollowing">4</string>
+    <string name="following">following</string>
+    <string name="username">Santosh Sahoo</string>
+    <string name="btntext">EDIT YOUR PROFILE</string>
 </resources>

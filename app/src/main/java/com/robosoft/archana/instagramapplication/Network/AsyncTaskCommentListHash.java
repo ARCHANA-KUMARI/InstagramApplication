@@ -2,9 +2,9 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
+import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
@@ -36,8 +36,9 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     private String mUrl[];
     SendCommentDetails sendComment;
     ArrayList<CommentDetails> arrayList;
+    TaskListener taskListener;
 
-    public AsyncTaskCommentListHash(Context mContext,String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public AsyncTaskCommentListHash(Context mContext, String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mCommnetList = mCommnetList;
         this.mUrl = url;
@@ -55,9 +56,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
             try {
 
                 URL urlComment = new URL(mUrl[i]);
-
                 MediaDetails mediaDetails = mediaDetailsList.get(i);
-
                 HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
                 InputStream inputStream = httpurlConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
@@ -102,6 +101,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     protected void onPostExecute(LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         super.onPostExecute((LinkedHashMap<String, ArrayList<CommentDetails>>) hashMap);
         sendComment.sendCommentsHashMap(hashMap);
+
     }
 }
 

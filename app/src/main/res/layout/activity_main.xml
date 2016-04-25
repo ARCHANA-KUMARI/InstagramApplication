@@ -7,22 +7,16 @@
     android:fitsSystemWindows="true"
     android:id="@+id/coordinator"
     tools:context="com.robosoft.archana.instagramapplication.MainActivity">
-
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        <include layout="@layout/appbar" android:id="@+id/toolbar"></include>
     </android.support.design.widget.AppBarLayout>
     <include layout="@layout/content_main" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

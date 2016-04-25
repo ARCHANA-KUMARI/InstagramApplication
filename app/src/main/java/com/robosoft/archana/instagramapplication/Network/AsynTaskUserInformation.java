@@ -2,7 +2,6 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Modal.Followers;
@@ -14,10 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -52,16 +49,15 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             InputStream inputStream = httpsURLConnection.getInputStream();
             String response = InputStreamtoString.readStream(inputStream);
-            Log.i("Hello","Response is"+response);
+
+
             JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
             JSONArray jsonArray = jsonObject.getJSONArray("data");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonSubObject = jsonArray.getJSONObject(i);
                 Followers followers = new Followers();
                 followers.setmFollowsUserName(jsonSubObject.getString("username"));
-
                 followers.setmFollowsUserId(jsonSubObject.getString("id"));
-
                 mFollowersList.add(followers);
             }
 
@@ -79,5 +75,6 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
     protected void onPostExecute(List<Followers> followerses) {
         super.onPostExecute(followerses);
         sendFollwersData.sendFdata(followerses);
+
     }
 }
