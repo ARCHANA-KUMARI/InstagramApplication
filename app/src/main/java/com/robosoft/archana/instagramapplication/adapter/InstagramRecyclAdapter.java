@@ -90,18 +90,20 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
       //  Log.i("Hello","Profile Pic is"+  mediaDetails.getmProfilePic());
         new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
         mTempCommentListValueList = mMediaCommentValueList.get(position);
-        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()) {
+        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()&&mTempCommentListValueList.size()>0) {
             for (int i = 0; i < noOfComments; i++) {
                 holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
                 CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
                 holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
             }
         } else {
+                if(mTempCommentListValueList.size()>0){
                 for (int i = 0; i < mTempCommentListValueList.size(); i++) {
                     holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
                     CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
                  //   holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
                     holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                }
                 }
         }
 
