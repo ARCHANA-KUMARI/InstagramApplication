@@ -56,9 +56,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
             try {
 
                 URL urlComment = new URL(mUrl[i]);
-
                 MediaDetails mediaDetails = mediaDetailsList.get(i);
-
                 HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();
                 InputStream inputStream = httpurlConnection.getInputStream();
                 String response = InputStreamtoString.readStream(inputStream);
