@@ -164,7 +164,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         TextView textComment = new TextView(mContext);
                         linearLayout.addView(textComment);
                         mEditComment.setText(" ");
-                        textComment.setText(Constants.API_USERNAME + " " + comment);
+                        textComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+Constants.API_USERNAME+":"+"</b>"+ "  " + "<small>"+comment+"</small>"));
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
 

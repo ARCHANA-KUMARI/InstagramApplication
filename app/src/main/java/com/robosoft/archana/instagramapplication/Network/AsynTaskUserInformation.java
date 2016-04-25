@@ -74,7 +74,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
     @Override
     protected void onPostExecute(List<Followers> followerses) {
         super.onPostExecute(followerses);
-        sendFollwersData.sendFdata(followerses);
+        sendFollwersData.sendFollowersId(followerses);
 
     }
 }

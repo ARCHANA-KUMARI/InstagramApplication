@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     }
 
     @Override
-    public void sendFdata(List<Followers> mList) {
+    public void sendFollowersId(List<Followers> mList) {
 
         recentMediaUrl = new String[mList.size()];
         Log.i("Hello","Size of recentCommentArray"+recentMediaUrl.length);
