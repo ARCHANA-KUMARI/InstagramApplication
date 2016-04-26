@@ -7,6 +7,7 @@ import android.util.Log;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
+import com.robosoft.archana.instagramapplication.Util.TimeUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,39 +45,39 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
 
         for (int i = 0; i < mUrl.length; i++) {
-            URL url;
+            URL url = null;
             try {
                 Log.i("Hello", "I AM IN AsyncTask Class");
                 url = new URL(mUrl[i]);
                 if (url != null) {
                     HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                InputStream inputStream = httpsURLConnection.getInputStream();
-                String response = InputStreamtoString.readStream(inputStream);
-                JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-                // For pagenation
-                JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
-                if (!jsonPagObj.isNull("next_url")) {
-                    String next_Url = jsonPagObj.getString("next_url");
-                }
-                JSONArray jsonArray = jsonObject.getJSONArray("data");
-                for (int j = 0; j < jsonArray.length(); j++) {
-
-                    JSONObject jsonSubObject = jsonArray.getJSONObject(j);
-                    MediaDetails mediaDetails = new MediaDetails();
-
-                    if (!jsonSubObject.isNull("comments")) {
+                    InputStream inputStream = httpsURLConnection.getInputStream();
+                    String response = InputStreamtoString.readStream(inputStream);
+                    JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
+                    // For pagenation
+                    JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
+                    if (!jsonPagObj.isNull("next_url")) {
+                         String next_Url = jsonPagObj.getString("next_url");
+                    }
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int j = 0; j < jsonArray.length(); j++) {
+                        JSONObject jsonSubObject = jsonArray.getJSONObject(j);
+                        MediaDetails mediaDetails = new MediaDetails();
+                        if (!jsonSubObject.isNull("comments")) {
                         JSONObject commentObject = jsonSubObject.getJSONObject("comments");
-
                         String commentCount = commentObject.getString("count");
-
                         mediaDetails.setmCommentsCount(commentCount);
+                    }
+                    if(!jsonSubObject.isNull("created_time")){
+                        String created_time = jsonSubObject.getString("created_time");
+                        created_time = TimeUtil.convertMilliSecToYMD(created_time);
+                        mediaDetails.setmCreatedTime(created_time);
                     }
 
                     if (!jsonSubObject.isNull("likes")) {
                         JSONObject likeObject = jsonSubObject.getJSONObject("likes");
                         String likesCount = likeObject.getString("count");
                         mediaDetails.setmLikeCounts(likesCount);
-
                     }
 
                     if (!jsonSubObject.isNull("images")) {

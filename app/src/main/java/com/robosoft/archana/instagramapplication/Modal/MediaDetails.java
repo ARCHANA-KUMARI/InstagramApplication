@@ -15,7 +15,7 @@ public class MediaDetails implements Serializable{
         this.mUserName = mUserName;
     }
 
-    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation,mPagenation_nextUrl;
+    String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation,mPagenation_nextUrl,mCreatedTime;
 
     public String getmLocation() {
         return mLocation;
@@ -23,6 +23,14 @@ public class MediaDetails implements Serializable{
 
     public void setmLocation(String mLocation) {
         this.mLocation = mLocation;
+    }
+
+    public String getmCreatedTime() {
+        return mCreatedTime;
+    }
+
+    public void setmCreatedTime(String mCreatedTime) {
+        this.mCreatedTime = mCreatedTime;
     }
 
     public String getmCommentsCount() {

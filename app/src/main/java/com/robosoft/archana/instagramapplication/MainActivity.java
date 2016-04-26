@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -190,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public void sendFollowersId(List<Followers> mList) {
 
         recentMediaUrl = new String[mList.size()];
-        Log.i("Hello","Size of recentCommentArray"+recentMediaUrl.length);
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
@@ -227,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
 
         setInstagramRecyclAdapter();
+        //to do for handling exception
         if(progressDialog!=null){
             progressDialog.dismiss();
         }

@@ -81,12 +81,28 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
 
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
-        new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
+        Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
+        if(postedPicBitMap!=null){
+            holder.mImage.setImageBitmap(postedPicBitMap);
+        }
+        else{
+            holder.mImageProfilePic.setImageResource(R.drawable.download);
+            new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
+        }
+
         holder.mTextDescription.setText(mediaDetails.getmCaption());
         holder.mTextUserName.setText(mediaDetails.getmUserName());
         holder.mTextLocation.setText(mediaDetails.getmLocation());
+        holder.mTextCreatedTime.setText(mediaDetails.getmCreatedTime());
       //  Log.i("Hello","Profile Pic is"+  mediaDetails.getmProfilePic());
-        new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
+        // Memory cache handling
+        final Bitmap profilpicBitmap = mLrucache.get(mediaDetails.getmProfilePic());
+        if (profilpicBitmap != null) {
+            holder.mImageProfilePic.setImageBitmap(profilpicBitmap);
+        } else {
+            holder.mImageProfilePic.setImageResource(R.drawable.download);
+            new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
+        }
         mTempCommentListValueList = mMediaCommentValueList.get(position);
         if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()&&mTempCommentListValueList.size()>0) {
             for (int i = 0; i < noOfComments; i++) {
@@ -130,7 +146,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         private ImageButton mCommentButton;
         private TextView mTextComment;
         private TextView mTextUserName;
-        private TextView mTextLocation;
+        private TextView mTextLocation,mTextCreatedTime;
         String mediaId;
         LinearLayout linearLayout;
         ArrayList<TextView> CommentListTextView = new ArrayList<>();
@@ -146,6 +162,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.commentlayout);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
+            mTextCreatedTime = (TextView) itemView.findViewById(R.id.createdtime);
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
             this.position = position;
