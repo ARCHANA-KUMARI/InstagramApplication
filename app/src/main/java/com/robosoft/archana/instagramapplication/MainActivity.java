@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public static final String NO_OF_SETTING_COMMENTS = "noOfSetComments";
     private static final String LIST = "List";
     private static final String HASHMAP ="HashMap";
+    private static final String RECENT_MEDIA_URL_ARRAYS = "RecentMediaUrl";
+    private static final String COMMENTS_ARRAYS = "CommentUrl";
 
     private int mNoOfFollowers,mNoOfFollowing,mNoOfPost;
 
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             String fId = followers.getmFollowsUserId();
             recentMediaUrl[i] = Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME;
         }
+
         AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
         asyncTaskGetRecentMedia.execute();
     }
@@ -210,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             commentsUrl[countMediaId] = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
             countMediaId++;
         }
+
         AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
         asyncTaskCommentListHash.execute();
 
@@ -239,15 +242,19 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.i("Hello","I am in onSaveInstanceState Method");
+
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
+        outState.putStringArray(RECENT_MEDIA_URL_ARRAYS,recentMediaUrl);
+        outState.putStringArray(COMMENTS_ARRAYS,commentsUrl);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.i("Hello","I am in onRestoreInstanceState Method");
+
+        recentMediaUrl = savedInstanceState.getStringArray(RECENT_MEDIA_URL_ARRAYS);
+        commentsUrl = savedInstanceState.getStringArray(COMMENTS_ARRAYS);
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
         setInstagramRecyclAdapter();
@@ -265,26 +272,26 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
    }
 
     int count = 0;
+
     @Override
     public void onRefresh() {
-        // TODO FOR LANDSCAPE
-        if(NetworkStatus.isNetworkAvailable(this)){
-            if(mMedeiaDetailsList.size()>0){
+
+        if (NetworkStatus.isNetworkAvailable(this)) {
+            if (mMedeiaDetailsList.size() > 0) {
                 mMedeiaDetailsList.clear();
             }
-            if(mHashMapCommentsDetails.size()>0){
+            if (mHashMapCommentsDetails.size() > 0) {
                 mHashMapCommentsDetails.clear();
             }
-            progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
-            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
+            progressDialog = ProgressDialog.show(this, "Loading started.....", "Please Wait for a momment");
+            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList, recentMediaUrl);
             asyncTaskGetRecentMedia.execute();
-            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
+            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this, commentsUrl, mMedeiaDetailsList, mHashMapCommentsDetails);
             asyncTaskCommentListHash.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
             mInstagramRecyclAdapter.notifyDataSetChanged();
             mSwiper.setRefreshing(false);
-        }
-        else{
+        } else {
             SnackBarView.setSnackBar(mCoordinatorLayout);
         }
     }
