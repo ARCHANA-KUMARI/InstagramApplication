@@ -1,5 +1,6 @@
 package com.robosoft.archana.instagramapplication.Network;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -10,6 +11,7 @@ import com.robosoft.archana.instagramapplication.Modal.AccessToken;
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.RequestToken;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
+import com.robosoft.archana.instagramapplication.Util.OrientationHandler;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -34,6 +36,7 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
     @Override
     protected void onPreExecute() {
         taskListener.onStartTask();
+        OrientationHandler.lockOrientation((Activity) mContext);
     }
 
     public AsyncTaskAccessToken(MainActivity mContext, List<AccessToken> mList, String requesttoken) {

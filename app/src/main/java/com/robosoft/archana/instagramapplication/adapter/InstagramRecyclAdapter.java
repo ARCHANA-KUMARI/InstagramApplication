@@ -123,8 +123,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
         holder.mEditComment.setHint(R.string.addcommentedit);
         holder.mCommentButton.setImageResource(R.drawable.comment);
-
-
     }
 
     @Override
@@ -183,7 +181,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
                     }
-
                 }
             });
         }

@@ -17,7 +17,6 @@ import java.net.URL;
  */
 public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
 
-
     private LruCache<String, Bitmap> mMemoryCache;
     private String urladdress;
     private Bitmap mPic = null;
@@ -28,6 +27,7 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
         this.mImage = mImage;
         this.mMemoryCache = lruCache;
     }
+
     @Override
     protected Bitmap doInBackground(Void... params) {
         try {

@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
         asyncTaskCommentListHash.execute();
 
+
     }
 
     @Override
@@ -226,22 +228,24 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
         setInstagramRecyclAdapter();
         //to do for handling exception
+        Log.i("Hello","Progress Dialog Reference during dismiss"+progressDialog);
         if(progressDialog!=null){
             progressDialog.dismiss();
         }
+        Log.i("Hello","Progress Dialog Reference after dismiss"+progressDialog);
     }
 
     @Override
     public void onStartTask() {
+        Log.i("Hello","Progress DIalog ref is");
+        progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
+        Log.i("Hello","Progress DIalog ref is"+progressDialog);
 
-        if(mBundle==null){
-            progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
-        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
+        Log.i("Hello","I am in onSaveInstanceState Method");
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
         super.onSaveInstanceState(outState);
@@ -249,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-
+        Log.i("Hello","I am in onRestoreInstanceState Method");
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
         setInstagramRecyclAdapter();
@@ -291,4 +295,15 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             SnackBarView.setSnackBar(mCoordinatorLayout);
         }
     }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
+    }
+
 }

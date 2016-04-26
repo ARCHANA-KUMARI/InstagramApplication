@@ -1,5 +1,6 @@
 package com.robosoft.archana.instagramapplication.Network;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -8,6 +9,7 @@ import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
+import com.robosoft.archana.instagramapplication.Util.OrientationHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,8 +40,10 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     ArrayList<CommentDetails> arrayList;
     TaskListener taskListener;
 
+
     public AsyncTaskCommentListHash(Context mContext, String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
+        taskListener = (TaskListener) mContext;
         this.mCommnetList = mCommnetList;
         this.mUrl = url;
         this.mediaDetailsList = mediaDetailsList;
@@ -50,7 +54,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
 
     @Override
     protected LinkedHashMap<String, ArrayList<CommentDetails>> doInBackground(Void... params) {
-
+        // TODO: 26/4/16  for landscape mode  
         for (int i = 0; i < mUrl.length; i++) {
             arrayList = new ArrayList<>();
             try {
@@ -99,6 +103,7 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     protected void onPostExecute(LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         super.onPostExecute((LinkedHashMap<String, ArrayList<CommentDetails>>) hashMap);
         sendComment.sendCommentsHashMap(hashMap);
+        OrientationHandler.unLockOrientation((Activity) mContext);
 
     }
 }
