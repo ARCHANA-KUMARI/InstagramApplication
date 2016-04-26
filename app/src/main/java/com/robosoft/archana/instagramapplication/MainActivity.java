@@ -227,20 +227,14 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
 
         setInstagramRecyclAdapter();
-        //to do for handling exception
-        Log.i("Hello","Progress Dialog Reference during dismiss"+progressDialog);
         if(progressDialog!=null){
             progressDialog.dismiss();
         }
-        Log.i("Hello","Progress Dialog Reference after dismiss"+progressDialog);
     }
 
     @Override
     public void onStartTask() {
-        Log.i("Hello","Progress DIalog ref is");
         progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
-        Log.i("Hello","Progress DIalog ref is"+progressDialog);
-
     }
 
     @Override
@@ -261,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     }
 
    private void setInstagramRecyclAdapter(){
-
         mWebview.setVisibility(View.GONE);
         mSwiper.setVisibility(View.VISIBLE);
         mInstagramRecyclAdapter = new InstagramRecyclAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
@@ -274,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     int count = 0;
     @Override
     public void onRefresh() {
-
+        // TODO FOR LANDSCAPE
         if(NetworkStatus.isNetworkAvailable(this)){
             if(mMedeiaDetailsList.size()>0){
                 mMedeiaDetailsList.clear();
@@ -295,7 +288,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             SnackBarView.setSnackBar(mCoordinatorLayout);
         }
     }
-
 
     @Override
     public void onDestroy() {
