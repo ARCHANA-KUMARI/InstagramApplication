@@ -2,7 +2,6 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
@@ -44,7 +43,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
     @Override
     protected List<MediaDetails> doInBackground(Void... params) {
 
-        Log.i("Hello","Url length is"+mUrl.length);
+
         if(mUrl.length>0) {
 
 
@@ -53,7 +52,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                 try {
 
                     url = new URL(mUrl[i]);
-                    Log.i("Hello","url is"+url+"And Index is"+url);
+
                     if (url != null) {
                         HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                         InputStream inputStream = httpsURLConnection.getInputStream();

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +66,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
-        Log.i("Hello","MediaDetailsList size is in Adapter"+mMedeiaDetailsList.size());
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
