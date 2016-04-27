@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,10 +50,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,SendCommentDetails,TaskListener,SwipeRefreshLayout.OnRefreshListener{
 
-
     private List<UserDetail> mUserDetailList = new ArrayList<>();
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
+    private List<String> mPaginationList = new ArrayList<>();
+    private List<String> mRecentMediaUrlList = new ArrayList<>();
+    private List<String> mCommentUrlList = new ArrayList<>();
     private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
 
     private WebView mWebview;
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     // Use 1/8th of the available memory for this memory cach
     final int cacheSize = maxMemory / 8;
     private LruCache<String, Bitmap> mLrucCach = new LruCache<>(cacheSize);
+    LinearLayoutManager mLinearLayoutManager;
 
     private Toolbar mToolbar;
     private CoordinatorLayout mCoordinatorLayout;
@@ -74,12 +78,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public static final String NO_OF_SETTING_COMMENTS = "noOfSetComments";
     private static final String LIST = "List";
     private static final String HASHMAP ="HashMap";
-    private static final String RECENT_MEDIA_URL_ARRAYS = "RecentMediaUrl";
-    private static final String COMMENTS_ARRAYS = "CommentUrl";
+    private static final String RECENT_MEDIA_URL_LIST = "RecentMediaUrlList";
+    private static final String COMMENT_LIST = "CommentList";
 
     private int mNoOfFollowers,mNoOfFollowing,mNoOfPost;
-
-    String recentMediaUrl[],commentsUrl[];
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
 
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         mEditor = mSharedPreference.edit();
         loadInstagramHomePage();
         mSwiper.setOnRefreshListener(this);
+      //  setOnScrollListenerWithRecycleView();
     }
 
     private void loadInstagramHomePage(){
@@ -190,33 +193,36 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendFollowersId(List<Followers> mList) {
 
-        recentMediaUrl = new String[mList.size()];
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
-            recentMediaUrl[i] = Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME;
+            mRecentMediaUrlList.add(Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME);
         }
-
-        AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
+        AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList);
         asyncTaskGetRecentMedia.execute();
     }
 
     @Override
-    public void sendMediaId(List<MediaDetails> mMediaList,int sizeOfId) {
+    public void sendMediaId(List<MediaDetails> mMediaList,int sizeOfId,List<String> mPaginationList) {
+
 
         mMedeiaDetailsList = mMediaList;
-        commentsUrl = new String[sizeOfId];
-        int countMediaId = 0;
-        for(int i = 0 ;i<commentsUrl.length;i++){
-            MediaDetails mediaDetails = mMediaList.get(i);
-            commentsUrl[countMediaId] = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
-            countMediaId++;
+        if(mPaginationList.size()>0){
+            //TODO FOR PAGINATION
         }
+        if(mCommentUrlList.size()>0){
+            mCommentUrlList.clear();
 
-        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
+        }
+        for(int i = 0 ;i<sizeOfId;i++){
+            MediaDetails mediaDetails = mMediaList.get(i);
+            if(mediaDetails.getmMediaId()!=null){
+                mCommentUrlList.add(Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN);
+            }
+
+        }
+        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,mCommentUrlList,mMedeiaDetailsList, mHashMapCommentsDetails);
         asyncTaskCommentListHash.execute();
-
-
     }
 
     @Override
@@ -228,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
-
         setInstagramRecyclAdapter();
         if(progressDialog!=null){
             progressDialog.dismiss();
@@ -245,16 +250,16 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
-        outState.putStringArray(RECENT_MEDIA_URL_ARRAYS,recentMediaUrl);
-        outState.putStringArray(COMMENTS_ARRAYS,commentsUrl);
+        outState.putSerializable(RECENT_MEDIA_URL_LIST, (Serializable) mRecentMediaUrlList);
+        outState.putSerializable(COMMENT_LIST, (Serializable) mCommentUrlList);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
-        recentMediaUrl = savedInstanceState.getStringArray(RECENT_MEDIA_URL_ARRAYS);
-        commentsUrl = savedInstanceState.getStringArray(COMMENTS_ARRAYS);
+         mRecentMediaUrlList = (List<String>) savedInstanceState.getSerializable(RECENT_MEDIA_URL_LIST);
+         mCommentUrlList = (List<String>) savedInstanceState.getSerializable(COMMENT_LIST);
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
         setInstagramRecyclAdapter();
@@ -265,9 +270,9 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         mWebview.setVisibility(View.GONE);
         mSwiper.setVisibility(View.VISIBLE);
         mInstagramRecyclAdapter = new InstagramRecyclAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycler.setLayoutManager(linearLayoutManager);
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecycler.setLayoutManager(mLinearLayoutManager);
         mRecycler.setAdapter(mInstagramRecyclAdapter);
    }
 
@@ -276,6 +281,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void onRefresh() {
 
+        Log.i("Hello","I am in onRefresh Method......And"+count);
+        count++;
         if (NetworkStatus.isNetworkAvailable(this)) {
             if (mMedeiaDetailsList.size() > 0) {
                 mMedeiaDetailsList.clear();
@@ -283,10 +290,11 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             if (mHashMapCommentsDetails.size() > 0) {
                 mHashMapCommentsDetails.clear();
             }
+
             progressDialog = ProgressDialog.show(this, "Loading started.....", "Please Wait for a momment");
-            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList, recentMediaUrl);
+            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList,  mRecentMediaUrlList,mPaginationList);
             asyncTaskGetRecentMedia.execute();
-            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this, commentsUrl, mMedeiaDetailsList, mHashMapCommentsDetails);
+            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this, mCommentUrlList, mMedeiaDetailsList, mHashMapCommentsDetails);
             asyncTaskCommentListHash.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
             mInstagramRecyclAdapter.notifyDataSetChanged();
@@ -294,6 +302,52 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         } else {
             SnackBarView.setSnackBar(mCoordinatorLayout);
         }
+    }
+    boolean loading = true;
+     int firstVisiblesItems, visibleItemCount, totalItemCount;
+    private void setOnScrollListenerWithRecycleView(){
+
+
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.i("Hello","I am in OnScrollStateChanged");
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.i("Hello","I am in OnScrolled State");
+                if(dy>0){
+
+                    visibleItemCount = mLinearLayoutManager.getChildCount();
+                    Log.i("Hello","VisibleItemCount is"+visibleItemCount);
+                    totalItemCount = mLinearLayoutManager.getItemCount();
+                    Log.i("Hello","TotalItemCount is"+totalItemCount);
+                    firstVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
+                    Log.i("Hello","FirstVisibleItemPosition"+firstVisiblesItems);
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + firstVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            //Do pagination.. i.e. fetch new data
+                            progressDialog = ProgressDialog.show(getApplicationContext(), "Loading started.....", "Please Wait for a momment");
+
+//                            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList);
+//                           asyncTaskGetRecentMedia.execute();
+//                           AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this, commentsUrl, mMedeiaDetailsList, mHashMapCommentsDetails);
+//                             asyncTaskCommentListHash.execute();
+
+                        }
+                    }
+
+
+                }
+            }
+        });
     }
 
     @Override

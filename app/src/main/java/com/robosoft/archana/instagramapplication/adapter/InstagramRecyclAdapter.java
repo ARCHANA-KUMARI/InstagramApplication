@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +83,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
+        Log.i("Hello","PostedBitMap is"+postedPicBitMap);
         if(postedPicBitMap!=null){
             holder.mImage.setImageBitmap(postedPicBitMap);
         }
@@ -98,8 +100,10 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         // Memory cache handling
         final Bitmap profilpicBitmap = mLrucache.get(mediaDetails.getmProfilePic());
         if (profilpicBitmap != null) {
+            Log.i("Hello","I am in if Block of Lru");
             holder.mImageProfilePic.setImageBitmap(profilpicBitmap);
         } else {
+            Log.i("Hello","I am in Else Block of Lru");
             holder.mImageProfilePic.setImageResource(R.drawable.download);
             new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
         }

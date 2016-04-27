@@ -32,13 +32,6 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
     Communicator communicator;
     private String mRequestToken;
     TaskListener taskListener;
-
-    @Override
-    protected void onPreExecute() {
-        taskListener.onStartTask();
-        OrientationHandler.lockOrientation((Activity) mContext);
-    }
-
     public AsyncTaskAccessToken(MainActivity mContext, List<AccessToken> mList, String requesttoken) {
         this.mContext = mContext;
         taskListener = (TaskListener) mContext;
@@ -48,6 +41,13 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
         this.communicator = (Communicator) mContext;
 
     }
+    @Override
+    protected void onPreExecute() {
+        taskListener.onStartTask();
+        OrientationHandler.lockOrientation((Activity) mContext);
+    }
+
+
 
     @Override
     protected List<AccessToken> doInBackground(Void... params) {

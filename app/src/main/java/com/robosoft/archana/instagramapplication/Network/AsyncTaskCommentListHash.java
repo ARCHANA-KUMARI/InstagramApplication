@@ -35,31 +35,31 @@ public class AsyncTaskCommentListHash extends AsyncTask<Void, CommentDetails, Li
     private List<MediaDetails> mediaDetailsList;
     private Context mContext;
     private List<CommentDetails> mCommnetList;
-    private String mUrl[];
+   // private String mUrl[];
+    private List<String> mUrlList;
     SendCommentDetails sendComment;
     ArrayList<CommentDetails> arrayList;
     TaskListener taskListener;
 
 
-    public AsyncTaskCommentListHash(Context mContext, String url[], List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public AsyncTaskCommentListHash(Context mContext, List<String> urlList, List<MediaDetails> mediaDetailsList, LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         taskListener = (TaskListener) mContext;
         this.mCommnetList = mCommnetList;
-        this.mUrl = url;
+        this.mUrlList = urlList;
         this.mediaDetailsList = mediaDetailsList;
         this.hashMap = hashMap;
         sendComment = (SendCommentDetails) mContext;
-
     }
 
     @Override
     protected LinkedHashMap<String, ArrayList<CommentDetails>> doInBackground(Void... params) {
-        // TODO: 26/4/16  for landscape mode  
-        for (int i = 0; i < mUrl.length; i++) {
+        // TODO: 26/4/16  for landscape mode
+        for (int i = 0; i <mUrlList.size(); i++) {
             arrayList = new ArrayList<>();
             try {
 
-                URL urlComment = new URL(mUrl[i]);
+                URL urlComment = new URL(mUrlList.get(i));
                 if(urlComment!=null) {
                     MediaDetails mediaDetails = mediaDetailsList.get(i);
                     HttpsURLConnection httpurlConnection = (HttpsURLConnection) urlComment.openConnection();

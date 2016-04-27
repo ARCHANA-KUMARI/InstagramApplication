@@ -2,6 +2,7 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
@@ -28,30 +29,37 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
     private Context mContext;
     private int mSizeOfId = 0;
-    private List<MediaDetails> mediaDetailsList;
-    String mUrl[];
+    private List<MediaDetails> mMediaDetailsList;
+    private List<String>mPaginationList;
+   // String mUrl[];
+    private List<String> mUrl;
     SendMediaDetails sendMediaDetails;
 
-    public AsyncTaskGetRecentMedia(Context mContext, List<MediaDetails> mediaDetailsList, String mUrl[]) {
+
+    int check = 0;
+
+    public AsyncTaskGetRecentMedia(Context mContext, List<MediaDetails> mediaDetailsList, List<String> mUrl,List<String> mPaginationList) {
         this.mContext = mContext;
 
-        this.mediaDetailsList = mediaDetailsList;
+        this.mMediaDetailsList = mediaDetailsList;
         this.mUrl = mUrl;
         sendMediaDetails = (SendMediaDetails) mContext;
+        this.mPaginationList = mPaginationList;
+
     }
 
     @Override
     protected List<MediaDetails> doInBackground(Void... params) {
+       Log.i("Hello","I am in doInBack of AsyncTaskGetRecentMedia"+"UrlListRecentMedia SIze is"+mUrl.size());
+
+        if(mUrl.size()>0) {
 
 
-        if(mUrl.length>0) {
-
-
-            for (int i = 0; i < mUrl.length; i++) {
+            for (int i = 0; i < mUrl.size(); i++) {
                 URL url = null;
                 try {
 
-                    url = new URL(mUrl[i]);
+                    url = new URL(mUrl.get(i));
 
                     if (url != null) {
                         HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
@@ -62,6 +70,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                         JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
                         if (!jsonPagObj.isNull("next_url")) {
                             String next_Url = jsonPagObj.getString("next_url");
+                            mPaginationList.add(next_Url);
                         }
                         JSONArray jsonArray = jsonObject.getJSONArray("data");
                         for (int j = 0; j < jsonArray.length(); j++) {
@@ -102,6 +111,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
                             if (!jsonSubObject.isNull("id")) {
                                 String mediaId = jsonSubObject.getString("id");
+                                Log.i("Hello","MediaId in AsyncTask is"+mediaId);
                                 mediaDetails.setmMediaId(mediaId);
                                 mSizeOfId++;
                             }
@@ -117,7 +127,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                                 mediaDetails.setmLocation(locationObject.getString("name"));
 
                             }
-                            mediaDetailsList.add(mediaDetails);
+                            mMediaDetailsList.add(mediaDetails);
                         }
                     }
 
@@ -131,13 +141,14 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
             }
         }
-        return mediaDetailsList;
+        return mMediaDetailsList;
 
     }
 
     @Override
     protected void onPostExecute(List<MediaDetails> mediaDetailses) {
         super.onPostExecute(mediaDetailses);
-        sendMediaDetails.sendMediaId(mediaDetailses, mSizeOfId);
+        sendMediaDetails.sendMediaId(mediaDetailses, mSizeOfId,mPaginationList);
+
     }
 }
