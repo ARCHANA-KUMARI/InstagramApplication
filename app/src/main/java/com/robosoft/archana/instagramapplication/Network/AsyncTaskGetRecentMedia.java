@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
@@ -31,7 +30,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
     private List<String> mUrl;
     SendMediaDetails sendMediaDetails;
     LinkedHashMap<String, ArrayList<CommentDetails>> hashMap;
-    SendCommentDetails sendComment;
+
 
     public AsyncTaskGetRecentMedia(Context mContext, List<MediaDetails> mediaDetailsList, List<String> mUrl,List<String> mPaginationList,LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
@@ -40,7 +39,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
         sendMediaDetails = (SendMediaDetails) mContext;
         this.mPaginationList = mPaginationList;
         this.hashMap = hashMap;
-        sendComment = (SendCommentDetails) mContext;
     }
     @Override
     protected List<MediaDetails> doInBackground(Void... params) {
@@ -73,10 +71,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
     @Override
     protected void onPostExecute(List<MediaDetails> mediaDetailses) {
         if(sendMediaDetails!=null){
-            sendMediaDetails.sendMediaId(mediaDetailses,mPaginationList);
-        }
-        if(sendComment!=null){
-            sendComment.sendCommentsHashMap(hashMap);
+            sendMediaDetails.sendMediaId(mediaDetailses,mPaginationList,hashMap);
         }
         OrientationHandler.unLockOrientation((Activity) mContext);
     }

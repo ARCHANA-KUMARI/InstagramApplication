@@ -24,7 +24,6 @@ import android.webkit.WebView;
 import com.robosoft.archana.instagramapplication.Activity.UserProfileActivity;
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.NoOfCommentInterface;
-import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
@@ -47,7 +46,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,SendCommentDetails,TaskListener,SwipeRefreshLayout.OnRefreshListener,View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,TaskListener,SwipeRefreshLayout.OnRefreshListener,View.OnClickListener{
 
     private List<UserDetail> mUserDetailList = new ArrayList<>();
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private static final String LIST = "List";
     private static final String HASHMAP ="HashMap";
     private static final String RECENT_MEDIA_URL_LIST = "RecentMediaUrlList";
-    private static final String COMMENT_LIST = "CommentList";
 
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
@@ -191,8 +189,13 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     }
 
     @Override
-    public void sendMediaId(List<MediaDetails> mMediaList,List<String> mPaginationList) {
+    public void sendMediaId(List<MediaDetails> mMediaList,List<String> mPaginationList,LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
         mMedeiaDetailsList = mMediaList;
+        mHashMapCommentsDetails = mList;
+        setInstagramRecyclerAdapter();
+        if(progressDialog!=null){
+            progressDialog.dismiss();
+        }
         //TODO FOR PAGINATION
     }
 
@@ -201,14 +204,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         mEditor.putInt(NO_OF_COMMENTS,noOfComments);
         mEditor.commit();
         setInstagramRecyclerAdapter();
-    }
-
-    @Override
-    public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
-        setInstagramRecyclerAdapter();
-        if(progressDialog!=null){
-            progressDialog.dismiss();
-        }
     }
 
     @Override
