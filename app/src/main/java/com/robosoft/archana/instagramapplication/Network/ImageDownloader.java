@@ -22,8 +22,6 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
     private Bitmap mPic = null;
     private ImageView mImage;
 
-
-
     public ImageDownloader(LruCache<String, Bitmap> lruCache, String urladdress, ImageView mImage) {
         this.urladdress = urladdress;
         this.mImage = mImage;
