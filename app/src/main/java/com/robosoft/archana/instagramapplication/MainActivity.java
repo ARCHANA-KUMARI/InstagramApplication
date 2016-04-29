@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
     private List<String> mPaginationList = new ArrayList<>();
     private List<String> mRecentMediaUrlList = new ArrayList<>();
-    private List<String> mCommentUrlList = new ArrayList<>();
     private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
 
     private WebView mWebview;
@@ -81,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private static final String RECENT_MEDIA_URL_LIST = "RecentMediaUrlList";
     private static final String COMMENT_LIST = "CommentList";
 
-    private int mNoOfFollowers,mNoOfFollowing,mNoOfPost;
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
 
@@ -107,8 +105,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             mFloatBtn.setVisibility(View.VISIBLE);
         }
         mSwiper.setOnRefreshListener(this);
-        //TO DO FOR PAGINATION
-       // setOnScrollListenerWithRecycleView();
+
     }
 
     @Override
@@ -195,29 +192,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     public void sendMediaId(List<MediaDetails> mMediaList,List<String> mPaginationList) {
-
         mMedeiaDetailsList = mMediaList;
-
         //TODO FOR PAGINATION
-      /* if(mPaginationList.size()>0){
-
-               for(int i = 0;i<mPaginationList.size();i++){
-                 mCommentUrlList.add(Constants.APIURL + "/media/"+mPaginationList.get(i) +"/comments/?access_token=" + Constants.ACCESSTOKEN);
-             }
-
-       }
-       else{
-            /*for(int i = 0 ;i< mMedeiaDetailsList.size();i++){
-                MediaDetails mediaDetails = mMedeiaDetailsList.get(i);
-                if(mediaDetails.getmMediaId()!=null){
-                 //   Log.i("Hello","MediaID IS"+mediaDetails.getmMediaId());
-                    mCommentUrlList.add(Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN);
-                }
-
-            }
-        }*/
-
-
     }
 
     @Override
@@ -325,55 +301,4 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         }
         progressDialog = null;
     }
-
-
-    // For pagination implementation
-   /*   boolean loading = true;
-      int firstVisiblesItems, visibleItemCount, totalItemCount;
-
-    private void setOnScrollListenerWithRecycleView(){
-
-
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                Log.i("Hello","I am in OnScrollStateChanged");
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.i("Hello","I am in OnScrolled State");
-                if(dy>0){
-
-                    visibleItemCount = mLinearLayoutManager.getChildCount();
-                    Log.i("Hello","VisibleItemCount is"+visibleItemCount);
-                    totalItemCount = mLinearLayoutManager.getItemCount();
-                    Log.i("Hello","TotalItemCount is"+totalItemCount);
-                    firstVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
-                    Log.i("Hello","FirstVisibleItemPosition"+firstVisiblesItems);
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + firstVisiblesItems) >= totalItemCount)
-                        {
-                            loading = false;
-                            Log.v("...", "Last Item Wow !");
-                            //Do pagination.. i.e. fetch new data
-                            progressDialog = ProgressDialog.show(getApplicationContext(), "Loading started.....", "Please Wait for a momment");
-
-                          *//*  AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(getApplicationContext(), mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList,mHashMapCommentsDetails);
-                            asyncTaskGetRecentMedia.execute();
-                         *//*
-
-                        }
-                    }
-
-
-                }
-            }
-        });
-    }
-*/
-
 }
