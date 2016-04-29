@@ -2,9 +2,8 @@ package com.robosoft.archana.instagramapplication.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.Html;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,8 +67,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
-        Log.i("Hello","MediaDetailsList Size is"+mMedeiaDetailsList.size());
-        Log.i("Hello","Comment list size is"+mTempCommentListValueList.size());
         if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
             CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
             return commentViewHolder;
@@ -83,35 +80,48 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     @Override
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
 
-       // Log.i("Hello","I am on bindviewHOLDER");
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
-        new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
+        Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
+        if(postedPicBitMap!=null){
+            holder.mImage.setImageBitmap(postedPicBitMap);
+        }
+        else{
+            holder.mImageProfilePic.setImageResource(R.drawable.download);
+            new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
+        }
+
         holder.mTextDescription.setText(mediaDetails.getmCaption());
         holder.mTextUserName.setText(mediaDetails.getmUserName());
         holder.mTextLocation.setText(mediaDetails.getmLocation());
-      //  Log.i("Hello","Profile Pic is"+  mediaDetails.getmProfilePic());
-        new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
+        holder.mTextCreatedTime.setText(mediaDetails.getmCreatedTime());
+        // Memory cache handling
+        final Bitmap profilpicBitmap = mLrucache.get(mediaDetails.getmProfilePic());
+        if (profilpicBitmap != null) {
+            holder.mImageProfilePic.setImageBitmap(profilpicBitmap);
+        } else {
+            holder.mImageProfilePic.setImageResource(R.drawable.download);
+            new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
+        }
         mTempCommentListValueList = mMediaCommentValueList.get(position);
-        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()) {
+        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()&&mTempCommentListValueList.size()>0) {
             for (int i = 0; i < noOfComments; i++) {
-                holder.mTextComment = (TextView) holder.arrayList.get(i);
+                holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
                 CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                holder.mTextComment.setText(commentDetails.getmWhoCommented() + "  " + commentDetails.getmCommentText());
-                holder.mTextComment.setTypeface(null, Typeface.BOLD);
+                holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
             }
         } else {
+                if(mTempCommentListValueList.size()>0){
                 for (int i = 0; i < mTempCommentListValueList.size(); i++) {
-                holder.mTextComment = (TextView) holder.arrayList.get(i);
-                CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                holder.mTextComment.setText(commentDetails.getmWhoCommented() + " : " + commentDetails.getmCommentText());
-                holder.mTextComment.setTypeface(null, Typeface.BOLD);
-            }
+                    holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
+                    CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
+                 //   holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                    holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                }
+                }
         }
 
         holder.mEditComment.setHint(R.string.addcommentedit);
         holder.mCommentButton.setImageResource(R.drawable.comment);
-
-
     }
 
     @Override
@@ -131,10 +141,12 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         private TextView mTextDescription;
         private EditText mEditComment;
         private ImageButton mCommentButton;
-        private TextView mTextComment,mTextUserName,mTextLocation;
+        private TextView mTextComment;
+        private TextView mTextUserName;
+        private TextView mTextLocation,mTextCreatedTime;
         String mediaId;
         LinearLayout linearLayout;
-        ArrayList<TextView> arrayList = new ArrayList<>();
+        ArrayList<TextView> CommentListTextView = new ArrayList<>();
         int position;
 
         public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final String mediaId) {
@@ -145,32 +157,29 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             mTextUserName = (TextView) itemView.findViewById(R.id.username);
             mTextLocation = (TextView)itemView.findViewById(R.id.location);
             mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
-            linearLayout = (LinearLayout) itemView.findViewById(R.id.lay);
+            linearLayout = (LinearLayout) itemView.findViewById(R.id.commentlayout);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
+            mTextCreatedTime = (TextView) itemView.findViewById(R.id.createdtime);
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
             this.position = position;
             for (int i = 0; i < noOfCommentTextView; i++) {
                 mTextComment = new TextView(mContext);
                 linearLayout.addView(mTextComment);
-                arrayList.add(mTextComment);
-
+                CommentListTextView.add( mTextComment);
             }
-
             mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String comment = mEditComment.getText().toString();
                     if (!comment.isEmpty()) {
                         TextView textComment = new TextView(mContext);
-                        linearLayout.addView(textComment);
+                        linearLayout.addView(textComment,0);
                         mEditComment.setText(" ");
-                        textComment.setText(Constants.API_USERNAME + " " + comment);
+                        textComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+Constants.API_USERNAME+":"+"</b>"+ "  " + "<small>"+comment+"</small>"));
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
-
                     }
-
                 }
             });
         }

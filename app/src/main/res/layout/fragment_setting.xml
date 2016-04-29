@@ -12,7 +12,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="numberSigned"
             android:hint="@string/hintofeditcomment"
             android:id="@+id/editcomment"/>
     </android.support.design.widget.TextInputLayout>

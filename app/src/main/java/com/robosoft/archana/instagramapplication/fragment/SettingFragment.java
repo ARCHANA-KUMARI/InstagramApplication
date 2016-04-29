@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,25 @@ public class SettingFragment extends DialogFragment{
 
           View view  = inflater.inflate(R.layout.fragment_setting, container, false);
           mEditComment = (EditText) view.findViewById(R.id.editcomment);
+          mEditComment.addTextChangedListener(new TextWatcher() {
+              @Override
+              public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+              }
+
+              @Override
+              public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+              }
+              @Override
+              public void afterTextChanged(Editable s) {
+              if(mEditComment.getText().toString().startsWith("-")){
+                  mEditComment.setError("Invalid number for setting option");
+              }else if(mEditComment.getText().toString().isEmpty()){
+                  mEditComment.setError("This Field should not empty");
+              }
+              }
+          });
           mButtonOk = (Button)view.findViewById(R.id.btn);
           mButtonCancel = (Button)view.findViewById(R.id.cancel);
           getDialog().setTitle(R.string.dialogtitle);

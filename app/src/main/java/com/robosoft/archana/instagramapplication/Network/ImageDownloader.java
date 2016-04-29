@@ -17,27 +17,29 @@ import java.net.URL;
  */
 public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
 
-
     private LruCache<String, Bitmap> mMemoryCache;
     private String urladdress;
     private Bitmap mPic = null;
     private ImageView mImage;
 
+
+
     public ImageDownloader(LruCache<String, Bitmap> lruCache, String urladdress, ImageView mImage) {
         this.urladdress = urladdress;
         this.mImage = mImage;
         this.mMemoryCache = lruCache;
-
     }
+
     @Override
     protected Bitmap doInBackground(Void... params) {
         try {
             URL url = new URL(urladdress);
-          //  Log.i("Hello","Url of profile pic in ImageDownloader Class......"+url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = httpURLConnection.getInputStream();
-            mPic = BitmapFactory.decodeStream(inputStream);
-            mMemoryCache.put(urladdress, mPic);
+            if(url!=null) {
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                mPic = BitmapFactory.decodeStream(inputStream);
+                mMemoryCache.put(urladdress, mPic);
+            }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -48,7 +50,6 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
         mImage.setImageBitmap(bitmap);
 
     }
