@@ -333,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     }
 
 
+    // For pagination implementation
       boolean loading = true;
       int firstVisiblesItems, visibleItemCount, totalItemCount;
 
