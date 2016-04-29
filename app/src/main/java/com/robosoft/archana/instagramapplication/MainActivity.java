@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             mFloatBtn.setVisibility(View.VISIBLE);
         }
         mSwiper.setOnRefreshListener(this);
-
+        //TO DO FOR PAGINATION
        // setOnScrollListenerWithRecycleView();
     }
 
@@ -163,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendUserData(List<AccessToken> accessTokens) {
        // mWebview.setVisibility(View.GONE);
-       // mSwiper.setVisibility(View.VISIBLE);
         String accessToken = null,id = null;
         if(accessTokens.size()==1){
             AccessToken access = accessTokens.get(0);
@@ -185,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     public void sendFollowersId(List<Followers> mList) {
-       Log.i("Hello","I am in sendFollowerdsID");
+
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
@@ -199,17 +197,16 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public void sendMediaId(List<MediaDetails> mMediaList,List<String> mPaginationList) {
 
         mMedeiaDetailsList = mMediaList;
-       /* if(mCommentUrlList.size()>0){
-            mCommentUrlList.clear();
-        }*/
-//        if(mPaginationList.size()>0){
-//            //TODO FOR PAGINATION
-//             for(int i = 0;i<mPaginationList.size();i++){
-//                 mCommentUrlList.add(Constants.APIURL + "/media/"+mPaginationList.get(i) +"/comments/?access_token=" + Constants.ACCESSTOKEN);
-//             }
-//
-//        }
-//        else{
+
+        //TODO FOR PAGINATION
+      /* if(mPaginationList.size()>0){
+
+               for(int i = 0;i<mPaginationList.size();i++){
+                 mCommentUrlList.add(Constants.APIURL + "/media/"+mPaginationList.get(i) +"/comments/?access_token=" + Constants.ACCESSTOKEN);
+             }
+
+       }
+       else{
             /*for(int i = 0 ;i< mMedeiaDetailsList.size();i++){
                 MediaDetails mediaDetails = mMedeiaDetailsList.get(i);
                 if(mediaDetails.getmMediaId()!=null){
@@ -217,8 +214,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                     mCommentUrlList.add(Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN);
                 }
 
-            }*/
-      //  }
+            }
+        }*/
 
 
     }
@@ -249,15 +246,12 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
         outState.putSerializable(RECENT_MEDIA_URL_LIST, (Serializable) mRecentMediaUrlList);
-      //  outState.putSerializable(COMMENT_LIST, (Serializable) mCommentUrlList);
-
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
-         mRecentMediaUrlList = (List<String>) savedInstanceState.getSerializable(RECENT_MEDIA_URL_LIST);
-        // mCommentUrlList = (List<String>) savedInstanceState.getSerializable(COMMENT_LIST);
+        mRecentMediaUrlList = (List<String>) savedInstanceState.getSerializable(RECENT_MEDIA_URL_LIST);
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
         setInstagramRecyclerAdapter();
@@ -334,10 +328,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
 
     // For pagination implementation
-      boolean loading = true;
+   /*   boolean loading = true;
       int firstVisiblesItems, visibleItemCount, totalItemCount;
 
-    /*private void setOnScrollListenerWithRecycleView(){
+    private void setOnScrollListenerWithRecycleView(){
 
 
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
