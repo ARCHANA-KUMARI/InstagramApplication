@@ -28,17 +28,18 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/download"/>
-
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/leftmarginforname"
                     android:layout_toRightOf="@id/profilepic"
                     android:text="Name"
                     android:textColor="@color/username" />
 
                 <TextView
                     android:id="@+id/location"
+                    android:layout_marginLeft="@dimen/leftmarginforname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/username"

@@ -1,17 +1,15 @@
 package com.robosoft.archana.instagramapplication.Network;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
-import com.robosoft.archana.instagramapplication.MainActivity;
 import com.robosoft.archana.instagramapplication.Modal.AccessToken;
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.RequestToken;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
-import com.robosoft.archana.instagramapplication.Util.OrientationHandler;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -32,7 +30,7 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
     Communicator communicator;
     private String mRequestToken;
     TaskListener taskListener;
-    public AsyncTaskAccessToken(MainActivity mContext, List<AccessToken> mList, String requesttoken) {
+    public AsyncTaskAccessToken(Context mContext, List<AccessToken> mList, String requesttoken) {
         this.mContext = mContext;
         taskListener = (TaskListener) mContext;
         requestToken = new RequestToken();
@@ -43,15 +41,13 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
     }
     @Override
     protected void onPreExecute() {
+       // OrientationHandler.lockOrientation((Activity) mContext);
         taskListener.onStartTask();
-        OrientationHandler.lockOrientation((Activity) mContext);
+
     }
-
-
-
     @Override
     protected List<AccessToken> doInBackground(Void... params) {
-
+        Log.i("Hello","I am in AsyncTaskAccessToken");
         try {
             URL url = new URL(Constants.tokenURLString);
             if(url!=null) {
@@ -89,8 +85,10 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
 
     @Override
     protected void onPostExecute(List<AccessToken> accessTokens) {
-        super.onPostExecute(accessTokens);
-        communicator.sendUserData(accessTokens);
+        if(communicator!=null){
+            communicator.sendUserData(accessTokens);
+        }
+
     }
 
 

@@ -55,9 +55,10 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
         return mResponse;
     }
 
+     //Todo for onPostExecute
     @Override
     protected void onPostExecute(String s) {
-        super.onPostExecute(s);
+
     }
 }
 

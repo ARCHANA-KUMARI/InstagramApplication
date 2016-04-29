@@ -22,6 +22,8 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
     private Bitmap mPic = null;
     private ImageView mImage;
 
+
+
     public ImageDownloader(LruCache<String, Bitmap> lruCache, String urladdress, ImageView mImage) {
         this.urladdress = urladdress;
         this.mImage = mImage;
@@ -48,7 +50,6 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
         mImage.setImageBitmap(bitmap);
 
     }

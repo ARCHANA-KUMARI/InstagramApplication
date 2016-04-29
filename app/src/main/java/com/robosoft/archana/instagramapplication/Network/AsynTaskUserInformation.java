@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Modal.Followers;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
-import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,12 +13,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by archana on 24/2/16.
@@ -45,38 +41,36 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
     protected List<Followers> doInBackground(Void... params) {
         try {
             //Getting Follewers`S ID AND Name
-            URL url = new URL(mUrl);
-            if(url!=null) {
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                InputStream inputStream = httpsURLConnection.getInputStream();
-                String response = InputStreamtoString.readStream(inputStream);
-
-
-                JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
-                JSONArray jsonArray = jsonObject.getJSONArray("data");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonSubObject = jsonArray.getJSONObject(i);
-                    Followers followers = new Followers();
-                    followers.setmFollowsUserName(jsonSubObject.getString("username"));
-                    followers.setmFollowsUserId(jsonSubObject.getString("id"));
-                    mFollowersList.add(followers);
+             URL url = new URL(mUrl);
+             if(url!=null) {
+                 DownloadManager downloadManager = new DownloadManager();
+                 String response = downloadManager.download(url);
+                 if(response!=null) {
+                    JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
+                    JSONArray jsonArray = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonSubObject = jsonArray.getJSONObject(i);
+                        Followers followers = new Followers();
+                        followers.setmFollowsUserName(jsonSubObject.getString("username"));
+                        followers.setmFollowsUserId(jsonSubObject.getString("id"));
+                        mFollowersList.add(followers);
+                    }
                 }
             }
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return mFollowersList;
     }
 
-    @Override
+        @Override
     protected void onPostExecute(List<Followers> followerses) {
-        super.onPostExecute(followerses);
-        sendFollwersData.sendFollowersId(followerses);
-
+        if(sendFollwersData!=null){
+            sendFollwersData.sendFollowersId(followerses);
+        }
     }
 }

@@ -5,7 +5,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.robosoft.archana.instagramapplication.MainActivity;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskAccessToken;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class AuthWebClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
+       Log.i("Hello","I am in shouldOverrideUrlLoading Method");
         if (url.startsWith(Constants.CALLBACK_URL)) {
             System.out.println(url);
             String parts[] = url.split("=");
@@ -35,7 +34,7 @@ public class AuthWebClient extends WebViewClient {
             RequestToken requestToken = new RequestToken();
             requestToken.setRequestToken(request_token);
             Log.i("Hello", "Request_Token is" + request_token);
-            mAsyncTaskAccessToken = new AsyncTaskAccessToken((MainActivity) mContext, mList, request_token);
+            mAsyncTaskAccessToken = new AsyncTaskAccessToken(mContext, mList, request_token);
             mAsyncTaskAccessToken.execute();
             return true;
         }
