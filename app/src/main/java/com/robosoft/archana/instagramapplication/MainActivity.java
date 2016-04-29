@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,6 @@ import android.webkit.WebView;
 import com.robosoft.archana.instagramapplication.Activity.UserProfileActivity;
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.NoOfCommentInterface;
-import com.robosoft.archana.instagramapplication.Interfaces.SendCommentDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
 import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
@@ -35,10 +35,9 @@ import com.robosoft.archana.instagramapplication.Modal.Followers;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsynTaskUserInformation;
-import com.robosoft.archana.instagramapplication.Network.AsyncTaskCommentListHash;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskGetRecentMedia;
 import com.robosoft.archana.instagramapplication.Util.NetworkStatus;
-import com.robosoft.archana.instagramapplication.Util.SnackBarView;
+import com.robosoft.archana.instagramapplication.Util.OrientationHandler;
 import com.robosoft.archana.instagramapplication.adapter.InstagramRecyclAdapter;
 import com.robosoft.archana.instagramapplication.fragment.SettingFragment;
 
@@ -47,12 +46,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,SendCommentDetails,TaskListener,SwipeRefreshLayout.OnRefreshListener{
-
+public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,TaskListener,SwipeRefreshLayout.OnRefreshListener,View.OnClickListener{
 
     private List<UserDetail> mUserDetailList = new ArrayList<>();
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
+    private List<String> mPaginationList = new ArrayList<>();
+    private List<String> mRecentMediaUrlList = new ArrayList<>();
     private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
 
     private WebView mWebview;
@@ -62,11 +62,13 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     // Use 1/8th of the available memory for this memory cach
     final int cacheSize = maxMemory / 8;
     private LruCache<String, Bitmap> mLrucCach = new LruCache<>(cacheSize);
+    LinearLayoutManager mLinearLayoutManager;
 
     private Toolbar mToolbar;
     private CoordinatorLayout mCoordinatorLayout;
     private SwipeRefreshLayout mSwiper;
     private ProgressDialog progressDialog;
+    private FloatingActionButton mFloatBtn;
 
     private static final String MYPREFERENCES = "mypreference";
     private SharedPreferences mSharedPreference;
@@ -74,12 +76,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     public static final String NO_OF_SETTING_COMMENTS = "noOfSetComments";
     private static final String LIST = "List";
     private static final String HASHMAP ="HashMap";
-    private static final String RECENT_MEDIA_URL_ARRAYS = "RecentMediaUrl";
-    private static final String COMMENTS_ARRAYS = "CommentUrl";
+    private static final String RECENT_MEDIA_URL_LIST = "RecentMediaUrlList";
 
-    private int mNoOfFollowers,mNoOfFollowing,mNoOfPost;
-
-    String recentMediaUrl[],commentsUrl[];
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
 
@@ -92,35 +90,19 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setSupportActionBar(mToolbar);
         mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
         mEditor = mSharedPreference.edit();
-        loadInstagramHomePage();
-        mSwiper.setOnRefreshListener(this);
-    }
-
-    private void loadInstagramHomePage(){
 
         if(NetworkStatus.isNetworkAvailable(this)){
-
-            if(mBundle == null){
-                mWebview.loadUrl(getResources().getString(R.string.loginpageurl));
-                mWebview.setVerticalScrollBarEnabled(false);
-                mWebview.setHorizontalScrollBarEnabled(false);
-                mWebview.setWebViewClient(new AuthWebClient(MainActivity.this));
-                mWebview.getSettings().setJavaScriptEnabled(true);
-                mWebview.loadUrl(Constants.aurthUrlString);
-
+            if(mBundle==null){
+                loadInstagramHomePage();
+                getRequestToken();
             }
         }
         else{
-            SnackBarView.setSnackBar(mCoordinatorLayout);
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setVisibility(View.VISIBLE);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SnackBarView.setSnackBar(view);
-                }
-            });
+            setSnackBar();
+            mFloatBtn.setOnClickListener(this);
+            mFloatBtn.setVisibility(View.VISIBLE);
         }
+        mSwiper.setOnRefreshListener(this);
 
     }
 
@@ -161,13 +143,20 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private void initUi(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
+        mFloatBtn = (FloatingActionButton)findViewById(R.id.fab);
         mWebview = (WebView) findViewById(R.id.webview);
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.swiper);
         mRecycler = (RecyclerView)findViewById(R.id.recycler);
     }
+   private void getRequestToken(){
+       OrientationHandler.lockOrientation(this);
+       mWebview.setWebViewClient(new AuthWebClient(MainActivity.this));
+       mWebview.getSettings().setJavaScriptEnabled(true);
+       mWebview.loadUrl(Constants.aurthUrlString);
+   }
     @Override
     public void sendUserData(List<AccessToken> accessTokens) {
-
+       // mWebview.setVisibility(View.GONE);
         String accessToken = null,id = null;
         if(accessTokens.size()==1){
             AccessToken access = accessTokens.get(0);
@@ -190,49 +179,31 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendFollowersId(List<Followers> mList) {
 
-        recentMediaUrl = new String[mList.size()];
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
-            recentMediaUrl[i] = Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME;
+            mRecentMediaUrlList.add(Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME);
         }
-
-        AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,recentMediaUrl);
+        AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList,mHashMapCommentsDetails);
         asyncTaskGetRecentMedia.execute();
     }
 
     @Override
-    public void sendMediaId(List<MediaDetails> mMediaList,int sizeOfId) {
-
+    public void sendMediaId(List<MediaDetails> mMediaList,List<String> mPaginationList,LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
         mMedeiaDetailsList = mMediaList;
-        commentsUrl = new String[sizeOfId];
-        int countMediaId = 0;
-        for(int i = 0 ;i<commentsUrl.length;i++){
-            MediaDetails mediaDetails = mMediaList.get(i);
-            commentsUrl[countMediaId] = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
-            countMediaId++;
+        mHashMapCommentsDetails = mList;
+        setInstagramRecyclerAdapter();
+        if(progressDialog!=null){
+            progressDialog.dismiss();
         }
-
-        AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this,commentsUrl,mMedeiaDetailsList, mHashMapCommentsDetails);
-        asyncTaskCommentListHash.execute();
-
-
+        //TODO FOR PAGINATION
     }
 
     @Override
     public void onClick(int noOfComments) {
         mEditor.putInt(NO_OF_COMMENTS,noOfComments);
         mEditor.commit();
-        setInstagramRecyclAdapter();
-    }
-
-    @Override
-    public void sendCommentsHashMap(LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
-
-        setInstagramRecyclAdapter();
-        if(progressDialog!=null){
-            progressDialog.dismiss();
-        }
+        setInstagramRecyclerAdapter();
     }
 
     @Override
@@ -245,38 +216,36 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
-        outState.putStringArray(RECENT_MEDIA_URL_ARRAYS,recentMediaUrl);
-        outState.putStringArray(COMMENTS_ARRAYS,commentsUrl);
-        super.onSaveInstanceState(outState);
+        outState.putSerializable(RECENT_MEDIA_URL_LIST, (Serializable) mRecentMediaUrlList);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
-        recentMediaUrl = savedInstanceState.getStringArray(RECENT_MEDIA_URL_ARRAYS);
-        commentsUrl = savedInstanceState.getStringArray(COMMENTS_ARRAYS);
+        mRecentMediaUrlList = (List<String>) savedInstanceState.getSerializable(RECENT_MEDIA_URL_LIST);
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
-        setInstagramRecyclAdapter();
-        super.onRestoreInstanceState(savedInstanceState);
+        setInstagramRecyclerAdapter();
+
     }
 
-   private void setInstagramRecyclAdapter(){
+   private void setInstagramRecyclerAdapter(){
         mWebview.setVisibility(View.GONE);
         mSwiper.setVisibility(View.VISIBLE);
         mInstagramRecyclAdapter = new InstagramRecyclAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecycler.setLayoutManager(linearLayoutManager);
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecycler.setLayoutManager(mLinearLayoutManager);
         mRecycler.setAdapter(mInstagramRecyclAdapter);
+        mFloatBtn.setVisibility(View.GONE);
    }
-
-    int count = 0;
 
     @Override
     public void onRefresh() {
 
+        OrientationHandler.lockOrientation(this);
         if (NetworkStatus.isNetworkAvailable(this)) {
+
             if (mMedeiaDetailsList.size() > 0) {
                 mMedeiaDetailsList.clear();
             }
@@ -284,16 +253,39 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                 mHashMapCommentsDetails.clear();
             }
             progressDialog = ProgressDialog.show(this, "Loading started.....", "Please Wait for a momment");
-            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList, recentMediaUrl);
+            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList,mHashMapCommentsDetails);
             asyncTaskGetRecentMedia.execute();
-            AsyncTaskCommentListHash asyncTaskCommentListHash = new AsyncTaskCommentListHash(this, commentsUrl, mMedeiaDetailsList, mHashMapCommentsDetails);
-            asyncTaskCommentListHash.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
             mInstagramRecyclAdapter.notifyDataSetChanged();
             mSwiper.setRefreshing(false);
-        } else {
-            SnackBarView.setSnackBar(mCoordinatorLayout);
-        }
+
+       }else{
+           setSnackBar();
+           mSwiper.setRefreshing(false);
+       }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        setSnackBar();
+    }
+    public void loadInstagramHomePage(){
+        mWebview.loadUrl(getResources().getString(R.string.loginpageurl));
+        mWebview.setVerticalScrollBarEnabled(false);
+        mWebview.setHorizontalScrollBarEnabled(false);
+    }
+    private void setSnackBar(){
+
+        Snackbar.make(mCoordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                .setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(NetworkStatus.isNetworkAvailable(getApplicationContext()));
+                        loadInstagramHomePage();
+                        getRequestToken();
+                    }
+                }).show();
     }
 
     @Override
@@ -304,5 +296,4 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         }
         progressDialog = null;
     }
-
 }

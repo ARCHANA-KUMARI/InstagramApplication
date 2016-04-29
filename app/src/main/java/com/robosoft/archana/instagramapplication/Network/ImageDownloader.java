@@ -48,7 +48,6 @@ public class ImageDownloader extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
         mImage.setImageBitmap(bitmap);
 
     }

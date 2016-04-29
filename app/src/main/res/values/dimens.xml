@@ -14,5 +14,6 @@
     <dimen name="topmargin">20sp</dimen>
     <dimen name="margin">10dp</dimen>
     <dimen name="righmargindate">20dp</dimen>
+    <dimen name="leftmarginforname">4dp</dimen>
 
 </resources>

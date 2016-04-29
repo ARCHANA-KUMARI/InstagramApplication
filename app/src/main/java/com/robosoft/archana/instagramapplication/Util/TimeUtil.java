@@ -4,7 +4,9 @@ package com.robosoft.archana.instagramapplication.Util;
  * Created by archana on 25/4/16.
  */
 public class TimeUtil {
+
     public static String convertMilliSecToYMD(String date) {
+
         long currentTime = Long.parseLong(date);
         long now = System.currentTimeMillis();
         long timeDiff = now - currentTime*1000;
@@ -37,7 +39,8 @@ public class TimeUtil {
             return month+"months";
         }else  if(days>=1&&days<7){
             return days+"d";
-        }else  if(days>7){
+        }else if(days>=7&&days<29){
+            week = days/7;
             return week+"w";
         }else if(hour<24){
             return hour+"h";

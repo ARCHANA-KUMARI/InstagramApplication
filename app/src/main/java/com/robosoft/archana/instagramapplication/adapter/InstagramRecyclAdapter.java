@@ -94,7 +94,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         holder.mTextUserName.setText(mediaDetails.getmUserName());
         holder.mTextLocation.setText(mediaDetails.getmLocation());
         holder.mTextCreatedTime.setText(mediaDetails.getmCreatedTime());
-      //  Log.i("Hello","Profile Pic is"+  mediaDetails.getmProfilePic());
         // Memory cache handling
         final Bitmap profilpicBitmap = mLrucache.get(mediaDetails.getmProfilePic());
         if (profilpicBitmap != null) {
