@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setSupportActionBar(mToolbar);
         mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
         mEditor = mSharedPreference.edit();
+        mEditor.apply();
+
 
         if(NetworkStatus.isNetworkAvailable(this)){
             if(mBundle==null){
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void sendUserData(List<AccessToken> accessTokens) {
        // mWebview.setVisibility(View.GONE);
-        String accessToken = null,id = null;
+        String accessToken = null,id ;
         if(accessTokens.size()==1){
             AccessToken access = accessTokens.get(0);
             Followers followers = new Followers();
@@ -286,9 +288,11 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                 .setAction("Retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(NetworkStatus.isNetworkAvailable(getApplicationContext()));
-                        loadInstagramHomePage();
-                        getRequestToken();
+                        if(NetworkStatus.isNetworkAvailable(getApplicationContext())){
+                            loadInstagramHomePage();
+                            getRequestToken();
+                        }
+
                     }
                 }).show();
     }
@@ -326,13 +330,19 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                         if ((visibleItemCount + firstVisiblesItems) >= totalItemCount) {
                             loading = false;
                             if (mPaginationUrlList.size() > 0) {
+                                if(NetworkStatus.isNetworkAvailable(MainActivity.this)){
 
-                                mProgressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
-                                OrientationHandler.lockOrientation(MainActivity.this);
-                                AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(MainActivity.this, mMedeiaDetailsList, mPaginationUrlList, mHashMapCommentsDetails);
-                                asyncTaskGetRecentMedia.execute();
-                                mRecycler.setAdapter(mInstagramRecyclAdapter);
-                                mInstagramRecyclAdapter.notifyDataSetChanged();
+                                    mProgressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
+                                    OrientationHandler.lockOrientation(MainActivity.this);
+                                    AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(MainActivity.this, mMedeiaDetailsList, mPaginationUrlList, mHashMapCommentsDetails);
+                                    asyncTaskGetRecentMedia.execute();
+                                    mRecycler.setAdapter(mInstagramRecyclAdapter);
+                                    mInstagramRecyclAdapter.notifyDataSetChanged();
+                                }
+                                else {
+                                    setSnackBar();
+                                }
+
                             }
                         }
                     }
