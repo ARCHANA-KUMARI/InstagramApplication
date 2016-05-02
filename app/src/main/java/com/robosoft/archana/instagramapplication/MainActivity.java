@@ -303,30 +303,29 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     }
 
     // For pagination implementation
-      boolean loading = true;
-      int firstVisiblesItems, visibleItemCount, totalItemCount;
+    boolean loading = true;
+    int firstVisiblesItems, visibleItemCount, totalItemCount;
 
-    private void setOnScrollListenerWithRecyclerView(){
+    private void setOnScrollListenerWithRecyclerView() {
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 loading = true;
             }
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(dy>0){
+                if (dy > 0) {
                     visibleItemCount = mLinearLayoutManager.getChildCount();
                     totalItemCount = mLinearLayoutManager.getItemCount();
                     firstVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + firstVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + firstVisiblesItems) >= totalItemCount) {
                             loading = false;
-                            if( mPaginationUrlList.size()>0) {
+                            if (mPaginationUrlList.size() > 0) {
 
                                 mProgressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
                                 OrientationHandler.lockOrientation(MainActivity.this);
@@ -337,8 +336,6 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                             }
                         }
                     }
-
-
 
 
                 }
