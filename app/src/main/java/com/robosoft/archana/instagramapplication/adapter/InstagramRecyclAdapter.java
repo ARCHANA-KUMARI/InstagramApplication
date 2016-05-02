@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +46,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
 
-        Log.i("Hello","I am in Adapter COnstructor");
         this.mContext = mContext;
         this.mMedeiaDetailsList = mMedeiaDetailsList;
         this.mLrucache = mLrucache;
@@ -66,7 +64,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i("Hello","I am in Adapter onCreateViewHolder");
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
@@ -82,7 +79,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
-        Log.i("Hello","I am in Adapter onBindViewHolder");
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
         if(postedPicBitMap!=null){
@@ -129,7 +125,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public int getItemCount() {
-        Log.i("Hello","GetItemCount Size is in Adatper"+mMedeiaDetailsList.size());
         return mMedeiaDetailsList.size();
     }
 

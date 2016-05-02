@@ -26,7 +26,7 @@ public class AuthWebClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-       Log.i("Hello","I am in shouldOverrideUrlLoading Method");
+
         if (url.startsWith(Constants.CALLBACK_URL)) {
             System.out.println(url);
             String parts[] = url.split("=");
