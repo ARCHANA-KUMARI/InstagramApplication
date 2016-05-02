@@ -17,7 +17,6 @@ public class TimeUtil {
         } else {
             minute = second / 60;
         }
-
         if (minute >= 60) {
             hour = minute / 60;
         } else {
