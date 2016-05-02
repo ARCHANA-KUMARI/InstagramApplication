@@ -89,22 +89,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setContentView(R.layout.activity_main);
         initUi();
         setSupportActionBar(mToolbar);
-        mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
-        mEditor = mSharedPreference.edit();
-        mEditor.apply();
-
-
-        if(NetworkStatus.isNetworkAvailable(this)){
-            if(mBundle==null){
-                loadInstagramHomePage();
-                getRequestToken();
-            }
-        }
-        else{
-            setSnackBar();
-            mFloatBtn.setOnClickListener(this);
-            mFloatBtn.setVisibility(View.VISIBLE);
-        }
+        loadWebView();
         mSwiper.setOnRefreshListener(this);
         setOnScrollListenerWithRecyclerView();
 
@@ -151,12 +136,29 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         mWebview = (WebView) findViewById(R.id.webview);
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.swiper);
         mRecycler = (RecyclerView)findViewById(R.id.recycler);
+        mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
+        mEditor = mSharedPreference.edit();
+        mEditor.apply();
     }
    private void getRequestToken(){
        OrientationHandler.lockOrientation(this);
        mWebview.setWebViewClient(new AuthWebClient(MainActivity.this));
        mWebview.getSettings().setJavaScriptEnabled(true);
        mWebview.loadUrl(Constants.aurthUrlString);
+   }
+
+   private void loadWebView(){
+       if(NetworkStatus.isNetworkAvailable(this)){
+           if(mBundle==null){
+               loadInstagramHomePage();
+               getRequestToken();
+           }
+       }
+       else{
+           setSnackBar();
+           mFloatBtn.setOnClickListener(this);
+           mFloatBtn.setVisibility(View.VISIBLE);
+       }
    }
     @Override
     public void sendUserData(List<AccessToken> accessTokens) {
