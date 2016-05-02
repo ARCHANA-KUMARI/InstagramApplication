@@ -1,5 +1,7 @@
 package com.robosoft.archana.instagramapplication.Util;
 
+import android.util.Log;
+
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
@@ -29,6 +31,7 @@ public class JsonParser {
         JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
         if (!jsonPagObj.isNull("next_url")) {
             String next_Url = jsonPagObj.getString("next_url");
+            Log.i("Hello","Next_Url is"+next_Url);
             mPaginationList.add(next_Url);
         }
         JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -44,7 +47,7 @@ public class JsonParser {
                 if(commentUrlAddress!=null){
                     String commentResponse = downloadManager.download(commentUrlAddress);
                     arrayList = new ArrayList<>();
-                    commentUrlParsed(commentResponse,mediaDetails,arrayList,hashMap);
+                    hashMap = commentUrlParsed(commentResponse,mediaDetails,arrayList,hashMap);
                 }
             }
             if (!jsonSubObject.isNull("comments")) {
