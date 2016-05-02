@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private static final String RECENT_MEDIA_URL_LIST = "RecentMediaUrlList";
     private static final String PAGINATION_LIST = "PaginationList";
 
+     int scrolledTime = 0;
+
     SharedPreferences.Editor mEditor;
     private Bundle mBundle;
     static int checkPageTiem = 0;
@@ -219,18 +221,18 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
+        Log.i("Hello","I am in onSaveInstanceState");
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
-        outState.putSerializable(PAGINATION_LIST, (Serializable) mPaginationUrlList);
+      //  outState.putSerializable(PAGINATION_LIST, (Serializable) mPaginationUrlList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
         outState.putSerializable(RECENT_MEDIA_URL_LIST, (Serializable) mRecentMediaUrlList);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-
+        Log.i("Hello","I am in onRestoreInstanceState");
         mRecentMediaUrlList = (List<String>) savedInstanceState.getSerializable(RECENT_MEDIA_URL_LIST);
-        mPaginationUrlList = savedInstanceState.getStringArrayList(PAGINATION_LIST);
+     //   mPaginationUrlList = savedInstanceState.getStringArrayList(PAGINATION_LIST);
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
         setInstagramRecyclerAdapter();
@@ -310,33 +312,38 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
       int firstVisiblesItems, visibleItemCount, totalItemCount;
 
     private void setOnScrollListenerWithRecyclerView(){
-
+        Log.i("Hello","I am in setOnScrollListenerWithRecyclerView");
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                loading = true;
                // Log.i("Hello","I am in OnScrollStateChanged");
             }
+
 
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+              //  scrolledTime++;
                 Log.i("Hello","I am in OnScrolled State");
                 if(dy>0){
-
+                  //  Log.d("Hello","DY IS"+dy+"And Dx is"+dx);
                     visibleItemCount = mLinearLayoutManager.getChildCount();
                   //  Log.i("Hello","VisibleItemCount is"+visibleItemCount);
                     totalItemCount = mLinearLayoutManager.getItemCount();
                   //  Log.i("Hello","TotalItemCount is"+totalItemCount);
                     firstVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
-                  //  Log.i("Hello","FirstVisibleItemPosition"+firstVisiblesItems);
+                    Log.i("Hello","FirstVisibleItemPosition"+(firstVisiblesItems+visibleItemCount)+"TotalItemCount"+totalItemCount);
+
                     if (loading)
                     {
                         if ( (visibleItemCount + firstVisiblesItems) >= totalItemCount)
                         {
                             loading = false;
-                            Log.i("Hello", "Last Item Wow !");
+
+                            Log.i("Hello", "Last Item Wow........................ !");
                             //Do pagination.. i.e. fetch new data
                           //  if(progressDialog!=null){
 
@@ -344,16 +351,18 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                           //  }
 
                             if( mPaginationUrlList.size()>0) {
+                                Log.i("Hello", "checkPageTiem in Scrolled is" + checkPageTiem);
                                 progressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
                                 checkPageTiem++;
-                                Log.i("Hello", "checkPageTiem is" + checkPageTiem);
+
                                 //   mRecentMediaUrlList = mPaginationList;
                                 Log.i("Hello", "I am in pagination If Condition" + "And size is" +mPaginationUrlList.size());
                                 for (int i = 0; i < mPaginationUrlList.size(); i++) {
                                     Log.i("Hello", "Pagenation is" + mPaginationUrlList.get(i));
-                                    Log.i("Hello", "RecentMedia is......." + mRecentMediaUrlList.get(i));
+                                   // Log.i("Hello", "RecentMedia is......." + mRecentMediaUrlList.get(i));
 
                                 }
+                                  OrientationHandler.lockOrientation(MainActivity.this);
                                 //  mPaginationList.clear();
                                 AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(MainActivity.this, mMedeiaDetailsList, mPaginationUrlList, mHashMapCommentsDetails);
                                 asyncTaskGetRecentMedia.execute();
@@ -361,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                                 mInstagramRecyclAdapter.notifyDataSetChanged();
                             }
                             else{
-                                loading = false;
+                                //loading = false;
                             }
 
 
@@ -370,7 +379,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
                         }
                     }
-                    loading = true;
+
+
 
 
                 }

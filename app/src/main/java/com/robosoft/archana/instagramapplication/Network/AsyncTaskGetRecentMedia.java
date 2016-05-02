@@ -38,7 +38,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
         this.mMediaDetailsList = mediaDetailsList;
         this.mUrl = mUrl;
         sendMediaDetails = (SendMediaDetails) mContext;
-        this.mPaginationList = mPaginationList;
+
         this.hashMap = hashMap;
     }
     @Override
