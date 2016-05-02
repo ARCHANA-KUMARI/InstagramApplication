@@ -11,7 +11,7 @@ public class TimeUtil {
         long now = System.currentTimeMillis();
         long timeDiff = now - currentTime*1000;
         long second = timeDiff / 1000;
-        long minute=0,hour=0,days=0,week=0,month=0,year=0;
+        long minute=0,hour=0,days=0,week,month=0,year=0;
         if(second>=60){
             minute = second/60;
         }
@@ -20,9 +20,6 @@ public class TimeUtil {
         }
         if(hour>=24){
             days = hour/24;
-        }
-        if(days>=7){
-            week = days/7;
         }
         if(days>=30){
             month = days/30;
@@ -42,7 +39,7 @@ public class TimeUtil {
         }else if(days>=7&&days<29){
             week = days/7;
             return week+"w";
-        }else if(hour<24){
+        }else if(hour<24&&hour>minute){
             return hour+"h";
         }else if(minute<60){
             return minute+"m";
