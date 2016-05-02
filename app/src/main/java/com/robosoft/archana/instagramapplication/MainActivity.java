@@ -89,20 +89,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         setContentView(R.layout.activity_main);
         initUi();
         setSupportActionBar(mToolbar);
-        mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
-        mEditor = mSharedPreference.edit();
-
-        if(NetworkStatus.isNetworkAvailable(this)){
-            if(mBundle==null){
-                loadInstagramHomePage();
-                getRequestToken();
-            }
-        }
-        else{
-            setSnackBar();
-            mFloatBtn.setOnClickListener(this);
-            mFloatBtn.setVisibility(View.VISIBLE);
-        }
+        loadWebView();
         mSwiper.setOnRefreshListener(this);
         setOnScrollListenerWithRecyclerView();
 
@@ -149,6 +136,9 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         mWebview = (WebView) findViewById(R.id.webview);
         mSwiper = (SwipeRefreshLayout) findViewById(R.id.swiper);
         mRecycler = (RecyclerView)findViewById(R.id.recycler);
+        mSharedPreference = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
+        mEditor = mSharedPreference.edit();
+        mEditor.apply();
     }
    private void getRequestToken(){
        OrientationHandler.lockOrientation(this);
@@ -156,10 +146,24 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
        mWebview.getSettings().setJavaScriptEnabled(true);
        mWebview.loadUrl(Constants.aurthUrlString);
    }
+
+   private void loadWebView(){
+       if(NetworkStatus.isNetworkAvailable(this)){
+           if(mBundle==null){
+               loadInstagramHomePage();
+               getRequestToken();
+           }
+       }
+       else{
+           setSnackBar();
+           mFloatBtn.setOnClickListener(this);
+           mFloatBtn.setVisibility(View.VISIBLE);
+       }
+   }
     @Override
     public void sendUserData(List<AccessToken> accessTokens) {
        // mWebview.setVisibility(View.GONE);
-        String accessToken = null,id = null;
+        String accessToken = null,id ;
         if(accessTokens.size()==1){
             AccessToken access = accessTokens.get(0);
             Followers followers = new Followers();
@@ -286,9 +290,11 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                 .setAction("Retry", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(NetworkStatus.isNetworkAvailable(getApplicationContext()));
-                        loadInstagramHomePage();
-                        getRequestToken();
+                        if(NetworkStatus.isNetworkAvailable(getApplicationContext())){
+                            loadInstagramHomePage();
+                            getRequestToken();
+                        }
+
                     }
                 }).show();
     }
@@ -303,42 +309,45 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     }
 
     // For pagination implementation
-      boolean loading = true;
-      int firstVisiblesItems, visibleItemCount, totalItemCount;
+    boolean loading = true;
+    int firstVisiblesItems, visibleItemCount, totalItemCount;
 
-    private void setOnScrollListenerWithRecyclerView(){
+    private void setOnScrollListenerWithRecyclerView() {
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 loading = true;
             }
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(dy>0){
+                if (dy > 0) {
                     visibleItemCount = mLinearLayoutManager.getChildCount();
                     totalItemCount = mLinearLayoutManager.getItemCount();
                     firstVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
 
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + firstVisiblesItems) >= totalItemCount)
-                        {
+                    if (loading) {
+                        if ((visibleItemCount + firstVisiblesItems) >= totalItemCount) {
                             loading = false;
-                            if( mPaginationUrlList.size()>0) {
+                            if (mPaginationUrlList.size() > 0) {
+                                if(NetworkStatus.isNetworkAvailable(MainActivity.this)){
 
-                                mProgressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
-                                OrientationHandler.lockOrientation(MainActivity.this);
-                                AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(MainActivity.this, mMedeiaDetailsList, mPaginationUrlList, mHashMapCommentsDetails);
-                                asyncTaskGetRecentMedia.execute();
-                                mRecycler.setAdapter(mInstagramRecyclAdapter);
-                                mInstagramRecyclAdapter.notifyDataSetChanged();
+                                    mProgressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
+                                    OrientationHandler.lockOrientation(MainActivity.this);
+                                    AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(MainActivity.this, mMedeiaDetailsList, mPaginationUrlList, mHashMapCommentsDetails);
+                                    asyncTaskGetRecentMedia.execute();
+                                    mRecycler.setAdapter(mInstagramRecyclAdapter);
+                                    mInstagramRecyclAdapter.notifyDataSetChanged();
+                                }
+                                else {
+                                    setSnackBar();
+                                }
+
                             }
                         }
                     }
-
-
 
 
                 }
