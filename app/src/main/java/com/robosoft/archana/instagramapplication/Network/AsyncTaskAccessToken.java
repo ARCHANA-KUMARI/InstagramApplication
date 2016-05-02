@@ -2,7 +2,6 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
@@ -23,6 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 24/2/16.
  */
+
 public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken>> {
     RequestToken requestToken;
     private Context mContext;
@@ -47,7 +47,6 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
     }
     @Override
     protected List<AccessToken> doInBackground(Void... params) {
-        Log.i("Hello","I am in AsyncTaskAccessToken");
         try {
             URL url = new URL(Constants.tokenURLString);
             if(url!=null) {

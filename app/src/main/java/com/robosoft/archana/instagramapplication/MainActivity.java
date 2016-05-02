@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private List<UserDetail> mUserDetailList = new ArrayList<>();
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
-    private List<String> mPaginationList = new ArrayList<>();
+    private List<String> mPaginationUrlList = new ArrayList<>();
     private List<String> mRecentMediaUrlList = new ArrayList<>();
     private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
 
@@ -62,12 +62,12 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     // Use 1/8th of the available memory for this memory cach
     final int cacheSize = maxMemory / 8;
     private LruCache<String, Bitmap> mLrucCach = new LruCache<>(cacheSize);
-    LinearLayoutManager mLinearLayoutManager;
+    private LinearLayoutManager mLinearLayoutManager;
 
     private Toolbar mToolbar;
     private CoordinatorLayout mCoordinatorLayout;
     private SwipeRefreshLayout mSwiper;
-    private ProgressDialog progressDialog;
+    private ProgressDialog mProgressDialog;
     private FloatingActionButton mFloatBtn;
 
     private static final String MYPREFERENCES = "mypreference";
@@ -77,8 +77,9 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     private static final String LIST = "List";
     private static final String HASHMAP ="HashMap";
     private static final String RECENT_MEDIA_URL_LIST = "RecentMediaUrlList";
+    private static final String PAGINATION_LIST = "PaginationList";
 
-    SharedPreferences.Editor mEditor;
+    private SharedPreferences.Editor mEditor;
     private Bundle mBundle;
 
     @Override
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             mFloatBtn.setVisibility(View.VISIBLE);
         }
         mSwiper.setOnRefreshListener(this);
+        setOnScrollListenerWithRecyclerView();
 
     }
 
@@ -184,19 +186,19 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             String fId = followers.getmFollowsUserId();
             mRecentMediaUrlList.add(Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME);
         }
-        AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList,mHashMapCommentsDetails);
+        AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,mRecentMediaUrlList,mHashMapCommentsDetails);
         asyncTaskGetRecentMedia.execute();
     }
 
     @Override
-    public void sendMediaId(List<MediaDetails> mMediaList,List<String> mPaginationList,LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
+    public void sendMediaId(List<MediaDetails> mMediaList,List<String> paginationList,LinkedHashMap<String, ArrayList<CommentDetails>> mList) {
         mMedeiaDetailsList = mMediaList;
         mHashMapCommentsDetails = mList;
+        mPaginationUrlList = paginationList;
         setInstagramRecyclerAdapter();
-        if(progressDialog!=null){
-            progressDialog.dismiss();
+        if(mProgressDialog!=null){
+            mProgressDialog.dismiss();
         }
-        //TODO FOR PAGINATION
     }
 
     @Override
@@ -208,13 +210,14 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
 
     @Override
     public void onStartTask() {
-        progressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
+        mProgressDialog = ProgressDialog.show(this,"Loading started.....","Please Wait for a momment");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
         outState.putSerializable(LIST, (Serializable) mMedeiaDetailsList);
+        outState.putSerializable(PAGINATION_LIST, (Serializable) mPaginationUrlList);
         outState.putSerializable(HASHMAP,mHashMapCommentsDetails);
         outState.putSerializable(RECENT_MEDIA_URL_LIST, (Serializable) mRecentMediaUrlList);
     }
@@ -223,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
         mRecentMediaUrlList = (List<String>) savedInstanceState.getSerializable(RECENT_MEDIA_URL_LIST);
+        mPaginationUrlList = savedInstanceState.getStringArrayList(PAGINATION_LIST);
         mMedeiaDetailsList = (List<MediaDetails>) savedInstanceState.getSerializable(LIST);
         mHashMapCommentsDetails = (LinkedHashMap<String, ArrayList<CommentDetails>>) savedInstanceState.getSerializable(HASHMAP);
         setInstagramRecyclerAdapter();
@@ -252,12 +256,13 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             if (mHashMapCommentsDetails.size() > 0) {
                 mHashMapCommentsDetails.clear();
             }
-            progressDialog = ProgressDialog.show(this, "Loading started.....", "Please Wait for a momment");
-            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList,mRecentMediaUrlList,mPaginationList,mHashMapCommentsDetails);
+            mProgressDialog = ProgressDialog.show(this, "Loading started.....", "Please Wait for a momment");
+            AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this, mMedeiaDetailsList,mRecentMediaUrlList,mHashMapCommentsDetails);
             asyncTaskGetRecentMedia.execute();
             mRecycler.setAdapter(mInstagramRecyclAdapter);
             mInstagramRecyclAdapter.notifyDataSetChanged();
             mSwiper.setRefreshing(false);
+
 
        }else{
            setSnackBar();
@@ -291,9 +296,55 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
-        progressDialog = null;
+        mProgressDialog = null;
     }
+
+    // For pagination implementation
+      boolean loading = true;
+      int firstVisiblesItems, visibleItemCount, totalItemCount;
+
+    private void setOnScrollListenerWithRecyclerView(){
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                loading = true;
+            }
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy>0){
+                    visibleItemCount = mLinearLayoutManager.getChildCount();
+                    totalItemCount = mLinearLayoutManager.getItemCount();
+                    firstVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + firstVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            if( mPaginationUrlList.size()>0) {
+
+                                mProgressDialog = ProgressDialog.show(MainActivity.this, "Loading started.....", "Please Wait for a momment");
+                                OrientationHandler.lockOrientation(MainActivity.this);
+                                AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(MainActivity.this, mMedeiaDetailsList, mPaginationUrlList, mHashMapCommentsDetails);
+                                asyncTaskGetRecentMedia.execute();
+                                mRecycler.setAdapter(mInstagramRecyclAdapter);
+                                mInstagramRecyclAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+
+
+
+
+                }
+            }
+
+        });
+    }
+
 }

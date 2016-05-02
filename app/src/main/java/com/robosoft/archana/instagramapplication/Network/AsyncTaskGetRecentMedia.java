@@ -26,31 +26,34 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
 
     private Context mContext;
     private List<MediaDetails> mMediaDetailsList;
-    private List<String>mPaginationList;
+    private List<String>mPaginationList = new ArrayList<>();
     private List<String> mUrl;
     SendMediaDetails sendMediaDetails;
     LinkedHashMap<String, ArrayList<CommentDetails>> hashMap;
 
-
-    public AsyncTaskGetRecentMedia(Context mContext, List<MediaDetails> mediaDetailsList, List<String> mUrl,List<String> mPaginationList,LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public AsyncTaskGetRecentMedia(Context mContext, List<MediaDetails> mediaDetailsList, List<String> mUrl,LinkedHashMap<String, ArrayList<CommentDetails>> hashMap) {
         this.mContext = mContext;
         this.mMediaDetailsList = mediaDetailsList;
         this.mUrl = mUrl;
         sendMediaDetails = (SendMediaDetails) mContext;
-        this.mPaginationList = mPaginationList;
+
         this.hashMap = hashMap;
     }
+
     @Override
     protected List<MediaDetails> doInBackground(Void... params) {
+
         JsonParser jsonParser = new JsonParser();
+        if(mPaginationList.size()>0){
+            mPaginationList.clear();
+        }
         DownloadManager downloadManager = new DownloadManager();
         if(mUrl.size()>0) {
-
             for (int i = 0; i < mUrl.size(); i++) {
                 URL url = null;
                 try {
                      url = new URL(mUrl.get(i));
-                      if (url != null) {
+                     if (url != null) {
                         String response = downloadManager.download(url);
                         mMediaDetailsList = jsonParser.medeiaUrlParsed(response,mPaginationList,downloadManager,hashMap,mMediaDetailsList);
                      }

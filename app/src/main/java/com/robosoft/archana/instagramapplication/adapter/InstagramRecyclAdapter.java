@@ -45,6 +45,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     int noOfComments;
 
     public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
+
         this.mContext = mContext;
         this.mMedeiaDetailsList = mMedeiaDetailsList;
         this.mLrucache = mLrucache;
@@ -63,7 +64,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
@@ -79,7 +79,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
-
         MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
         if(postedPicBitMap!=null){
