@@ -27,14 +27,12 @@ public class TimeUtil {
         } else {
             hour = hour % 24;
         }
-
         if (days >= 30) {
             month = days / 30;
         }
         if (month >= 12) {
             year = month / 12;
         }
-
         if (year >= 1) {
             return year + "y";
         } else if (month >= 1 && month < 12) {
@@ -47,14 +45,15 @@ public class TimeUtil {
         } else if (days >= 7 && days < 29) {
             week = days / 7;
             return week + "w";
-        } else if (hour < 24 && hour > minute) {
+        } else if (hour < 24 ) {
             return hour + "h";
         } else if (minute < 60) {
             return minute + "m";
-        } else {
+        } else if(second<60){
+            second = second %60;
             return second + "s";
         }
-
+       return  second+"s";
 
     }
 }
