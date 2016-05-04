@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,9 @@ import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskPostComment;
+import com.robosoft.archana.instagramapplication.Network.DeleteAsyncTask;
 import com.robosoft.archana.instagramapplication.Network.ImageDownloader;
+import com.robosoft.archana.instagramapplication.Network.LikedMediaAsyncTask;
 import com.robosoft.archana.instagramapplication.R;
 
 import java.io.Serializable;
@@ -51,6 +54,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     private LinkedHashMap<String, UserDetail> mUserDetailsListHashMap;
     int noOfComments;
     public static final String USER_DETAILS = "Details";
+
 
     public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap, LinkedHashMap<String, UserDetail> userDetailsListHashMap) {
 
@@ -166,11 +170,12 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
+        private boolean clicked = true;
         int noOfCommentTextView;
         private ImageView mImage,mImageProfilePic;
         private TextView mTextDescription;
         private EditText mEditComment;
-        private ImageButton mCommentButton;
+        private ImageButton mCommentButton,mLikeBtn;
         private TextView mTextComment;
         private TextView mTextUserName;
         private TextView mTextLocation,mTextCreatedTime;
@@ -184,6 +189,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
             mCommentButton = (ImageButton) itemView.findViewById(R.id.commentbtn);
+            mLikeBtn = (ImageButton)itemView.findViewById(R.id.likebtn);
             mTextUserName = (TextView) itemView.findViewById(R.id.username);
             mTextLocation = (TextView)itemView.findViewById(R.id.location);
             mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
@@ -198,6 +204,28 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 linearLayout.addView(mTextComment);
                 CommentListTextView.add( mTextComment);
             }
+
+            mLikeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(clicked){
+                        mLikeBtn.setImageResource(R.drawable.like);
+                        String postLike = Constants.APIURL+"/media/"+mediaId+"/likes";
+                        new LikedMediaAsyncTask().execute(postLike);
+                        Log.i("Hello","I am in FIrst Click event Btn");
+                        clicked = false;
+                    }
+                    else{
+                        mLikeBtn.setImageResource(R.drawable.unlike);
+                        clicked = true;
+                        String postLike = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
+                        new DeleteAsyncTask().execute(postLike);
+                    }
+
+
+                }
+            });
             mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

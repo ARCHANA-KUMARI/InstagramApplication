@@ -15,5 +15,6 @@
     <dimen name="margin">10dp</dimen>
     <dimen name="righmargindate">20dp</dimen>
     <dimen name="leftmarginforname">4dp</dimen>
+    <dimen name="imgbtntopmargin">22dp</dimen>
 
 </resources>
