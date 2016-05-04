@@ -87,6 +87,8 @@ public class JsonParser {
                 JSONObject userObject = jsonSubObject.getJSONObject("user");
                 mediaDetails.setmUserName(userObject.getString("username"));
                 mediaDetails.setmProfilePic(userObject.getString("profile_picture"));
+                mediaDetails.setmUserId(userObject.getString("id"));
+
             }
 
             if (!jsonSubObject.isNull("location")) {

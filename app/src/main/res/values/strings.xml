@@ -10,9 +10,9 @@
     <string name="addcommentedit">Add a comment...</string>
     <string name="title_activity_user_profile">UserProfileActivity</string>
     <string name="noofpost">5</string>
-    <string name="post">Posts</string>
+    <string name="post">posts</string>
     <string name="nooffollowers">4</string>
-    <string name="followers">Followers</string>
+    <string name="followers">followers</string>
     <string name="nooffollowing">4</string>
     <string name="following">following</string>
     <string name="username">Santosh Sahoo</string>

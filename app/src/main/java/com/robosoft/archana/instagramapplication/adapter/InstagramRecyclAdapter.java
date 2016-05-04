@@ -1,7 +1,9 @@
 package com.robosoft.archana.instagramapplication.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.LruCache;
@@ -14,16 +16,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.robosoft.archana.instagramapplication.Activity.UserProfileActivity;
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
+import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskPostComment;
 import com.robosoft.archana.instagramapplication.Network.ImageDownloader;
 import com.robosoft.archana.instagramapplication.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,15 +48,18 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     private ArrayList<CommentDetails> mTempCommentListValueList;
     private ArrayList<String> mMedeiaKeyList = new ArrayList<>();
     private ArrayList<ArrayList<CommentDetails>> mMediaCommentValueList = new ArrayList<>();
+    private LinkedHashMap<String, UserDetail> mUserDetailsListHashMap;
     int noOfComments;
+    public static final String USER_DETAILS = "Details";
 
-    public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap) {
+    public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap, LinkedHashMap<String, UserDetail> userDetailsListHashMap) {
 
         this.mContext = mContext;
         this.mMedeiaDetailsList = mMedeiaDetailsList;
         this.mLrucache = mLrucache;
         this.noOfComments = noOfComments;
         this.hashMap = hashMap;
+        this.mUserDetailsListHashMap = userDetailsListHashMap;
         Set keys = hashMap.entrySet();
         Iterator<CommentDetails> iterator = keys.iterator();
         while (iterator.hasNext()) {
@@ -79,7 +88,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, final int position) {
-        MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
+        final MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
         if(postedPicBitMap!=null){
             holder.mImage.setImageBitmap(postedPicBitMap);
@@ -91,6 +100,28 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
         holder.mTextDescription.setText(mediaDetails.getmCaption());
         holder.mTextUserName.setText(mediaDetails.getmUserName());
+        holder.mTextUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Set keys =mUserDetailsListHashMap.entrySet();
+                Iterator<UserDetail> iterator = keys.iterator();
+                while (iterator.hasNext()){
+                    Map.Entry pairs = (Map.Entry) iterator.next();
+                    String keyname = (String) pairs.getKey();
+                    if(mediaDetails.getmUserId().equals(keyname)){
+                        UserDetail userDetail =  mUserDetailsListHashMap.get(keyname);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(USER_DETAILS, (Serializable) userDetail);
+                        Intent intent = new Intent(mContext, UserProfileActivity.class);
+                        intent.putExtras(bundle);
+                        mContext.startActivity(intent);
+                    }
+
+                }
+                }
+
+
+        });
         holder.mTextLocation.setText(mediaDetails.getmLocation());
         holder.mTextCreatedTime.setText(mediaDetails.getmCreatedTime());
         // Memory cache handling
@@ -113,7 +144,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 for (int i = 0; i < mTempCommentListValueList.size(); i++) {
                     holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
                     CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                 //   holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                    //holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
                     holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
                 }
                 }
@@ -175,12 +206,14 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         TextView textComment = new TextView(mContext);
                         linearLayout.addView(textComment,0);
                         mEditComment.setText(" ");
+                        //TODO FOR COMMENT VALIDATION
                         textComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+Constants.API_USERNAME+":"+"</b>"+ "  " + "<small>"+comment+"</small>"));
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
                     }
                 }
             });
+
         }
     }
 

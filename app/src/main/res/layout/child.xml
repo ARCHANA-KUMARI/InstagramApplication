@@ -35,6 +35,7 @@
                     android:layout_marginLeft="@dimen/leftmarginforname"
                     android:layout_toRightOf="@id/profilepic"
                     android:text="Name"
+                    android:clickable="true"
                     android:textColor="@color/username" />
 
                 <TextView

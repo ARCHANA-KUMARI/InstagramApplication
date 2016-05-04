@@ -36,6 +36,7 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
             if(url!=null) {
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("POST");
+               // httpsURLConnection.setRequestMethod("DELETE");
                 httpsURLConnection.setDoInput(true);
                 httpsURLConnection.setDoOutput(true);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
