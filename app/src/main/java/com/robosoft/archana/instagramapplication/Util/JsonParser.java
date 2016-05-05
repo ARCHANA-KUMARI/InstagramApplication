@@ -41,6 +41,7 @@ public class JsonParser {
 
             if (!jsonSubObject.isNull("id")) {
                 String mediaId = jsonSubObject.getString("id");
+                Log.i("Hello","Media Id is"+mediaId);
                 mediaDetails.setmMediaId(mediaId);
                 String commentUrl = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
                 URL commentUrlAddress = new URL(commentUrl);
