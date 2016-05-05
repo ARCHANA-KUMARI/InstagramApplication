@@ -2,10 +2,10 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Modal.Followers;
-import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,14 +24,13 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
 
     private Context mContext;
     private List<Followers> mFollowersList;
-    private List<UserDetail> mUserDetailsList;
+
     private String mUrl;
     SendFollwersData sendFollwersData;
 
-    public AsynTaskUserInformation(Context mContext, List<UserDetail> mUserDetailsList, List<Followers> mFollowersList, String mUrl) {
+    public AsynTaskUserInformation(Context mContext,List<Followers> mFollowersList, String mUrl) {
 
         this.mContext = mContext;
-        this.mUserDetailsList = mUserDetailsList;
         this.mFollowersList = mFollowersList;
         this.mUrl = mUrl;
         sendFollwersData = (SendFollwersData) mContext;
@@ -44,7 +43,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
              URL url = new URL(mUrl);
              if(url!=null) {
                  DownloadManager downloadManager = new DownloadManager();
-                 String response = downloadManager.download(url);
+                 String response = downloadManager.downloadWithGet(url);
                  if(response!=null) {
                     JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
                     JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -69,7 +68,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
 
         @Override
     protected void onPostExecute(List<Followers> followerses) {
-        if(sendFollwersData!=null){
+            if(sendFollwersData!=null){
             sendFollwersData.sendFollowersId(followerses);
         }
     }

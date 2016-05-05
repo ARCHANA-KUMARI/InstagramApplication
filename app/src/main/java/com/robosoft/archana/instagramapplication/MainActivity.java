@@ -2,7 +2,6 @@ package com.robosoft.archana.instagramapplication;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -21,11 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
-import com.robosoft.archana.instagramapplication.Activity.UserProfileActivity;
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.NoOfCommentInterface;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
 import com.robosoft.archana.instagramapplication.Interfaces.SendMediaDetails;
+import com.robosoft.archana.instagramapplication.Interfaces.SendUserDetailsList;
 import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
 import com.robosoft.archana.instagramapplication.Modal.AccessToken;
 import com.robosoft.archana.instagramapplication.Modal.AuthWebClient;
@@ -36,6 +35,7 @@ import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
 import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsynTaskUserInformation;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskGetRecentMedia;
+import com.robosoft.archana.instagramapplication.Network.UserDetailsAsysncTask;
 import com.robosoft.archana.instagramapplication.Util.NetworkStatus;
 import com.robosoft.archana.instagramapplication.Util.OrientationHandler;
 import com.robosoft.archana.instagramapplication.adapter.InstagramRecyclAdapter;
@@ -46,13 +46,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,TaskListener,SwipeRefreshLayout.OnRefreshListener,View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements Communicator,SendFollwersData,SendMediaDetails,NoOfCommentInterface,TaskListener,SwipeRefreshLayout.OnRefreshListener,View.OnClickListener,SendUserDetailsList{
 
-    private List<UserDetail> mUserDetailList = new ArrayList<>();
+
     private List<Followers> mFollwersDetailsList = new ArrayList<>();
     private List<MediaDetails> mMedeiaDetailsList = new ArrayList<>();
     private List<String> mPaginationUrlList = new ArrayList<>();
     private List<String> mRecentMediaUrlList = new ArrayList<>();
+    private List<String> mUserInfoUrlList = new ArrayList();
+    private List<UserDetail> mUserDetailsList = new ArrayList<>();
+    private LinkedHashMap<String,UserDetail> mUserDetailsMap = new LinkedHashMap<>();
     private LinkedHashMap<String,ArrayList<CommentDetails>> mHashMapCommentsDetails = new LinkedHashMap<>();
 
     private WebView mWebview;
@@ -120,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                 settingFragment.show(fragmentManager,"Setting");
                 return true;
             case R.id.user_profile:
-                Intent intent = new Intent(this,UserProfileActivity.class);
-                startActivity(intent);
+              /*  Intent intent = new Intent(this,UserProfileActivity.class);
+                startActivity(intent);*/
                 return true;
 
         }
@@ -175,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
             mFollwersDetailsList.add(followers);
         }
         String followersUrl  = "https://api.instagram.com/v1/users/self/follows?access_token="+accessToken;
-        AsynTaskUserInformation asynTaskUserInformation = new AsynTaskUserInformation(this,mUserDetailList,mFollwersDetailsList,followersUrl);
+        AsynTaskUserInformation asynTaskUserInformation = new AsynTaskUserInformation(this,mFollwersDetailsList,followersUrl);
         asynTaskUserInformation.execute();
 
 
@@ -188,8 +191,13 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         for(int i = 0;i<mList.size();i++){
             Followers followers = mList.get(i);
             String fId = followers.getmFollowsUserId();
+            //https://api.instagram.com/v1/users/{user-id}/?access_token=ACCESS-TOKEN
+            mUserInfoUrlList.add(Constants.APIURL+"/users/"+fId+"/?access_token="+Constants.ACCESSTOKEN);
             mRecentMediaUrlList.add(Constants.APIURL + "/users/"+fId +"/media/recent/?access_token=" + Constants.ACCESSTOKEN+Constants.NO_OF_MEDIA_LOADED_AT_ONE_TIME);
         }
+
+        UserDetailsAsysncTask userDetailsAsysncTask = new UserDetailsAsysncTask(mUserInfoUrlList,this);
+        userDetailsAsysncTask.execute();
         AsyncTaskGetRecentMedia asyncTaskGetRecentMedia = new AsyncTaskGetRecentMedia(this,mMedeiaDetailsList,mRecentMediaUrlList,mHashMapCommentsDetails);
         asyncTaskGetRecentMedia.execute();
     }
@@ -240,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
    private void setInstagramRecyclerAdapter(){
         mWebview.setVisibility(View.GONE);
         mSwiper.setVisibility(View.VISIBLE);
-        mInstagramRecyclAdapter = new InstagramRecyclAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails);
+        mInstagramRecyclAdapter = new InstagramRecyclAdapter(mLrucCach,this,mMedeiaDetailsList,mSharedPreference.getInt(NO_OF_COMMENTS,0),mHashMapCommentsDetails,mUserDetailsMap);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycler.setLayoutManager(mLinearLayoutManager);
@@ -356,4 +364,10 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
         });
     }
 
+
+    @Override
+    public void sendUserDetails(List<UserDetail> list, LinkedHashMap<String, UserDetail> hashMaplist) {
+        mUserDetailsMap = hashMaplist;
+        mUserDetailsList = list;
+    }
 }
