@@ -51,7 +51,6 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
                         JSONObject jsonSubObject = jsonArray.getJSONObject(i);
                         Followers followers = new Followers();
                         followers.setmFollowsUserName(jsonSubObject.getString("username"));
-                        Log.i("Hello","User Id is"+jsonSubObject.getString("id"));
                         followers.setmFollowsUserId(jsonSubObject.getString("id"));
                         mFollowersList.add(followers);
                     }
@@ -69,8 +68,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
 
         @Override
     protected void onPostExecute(List<Followers> followerses) {
-            Log.i("Hello","Size of FollowersList is"+followerses.size());
-        if(sendFollwersData!=null){
+            if(sendFollwersData!=null){
             sendFollwersData.sendFollowersId(followerses);
         }
     }

@@ -50,10 +50,8 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
         try {
             URL url = new URL(Constants.tokenURLString);
             if(url!=null) {
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                httpsURLConnection.setRequestMethod("POST");
-                httpsURLConnection.setDoInput(true);
-                httpsURLConnection.setDoOutput(true);
+                DownloadManager downloadManager = new DownloadManager();
+                HttpsURLConnection httpsURLConnection = downloadManager.downloadWithPost(url);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
                 outputStreamWriter.write("client_id=" + Constants.CLIENT_ID +
                         "&client_secret=" + Constants.CLIENT_SECRET +

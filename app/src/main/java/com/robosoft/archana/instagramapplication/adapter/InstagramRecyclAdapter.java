@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -153,7 +152,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 }
                 }
         }
-
         holder.mEditComment.setHint(R.string.addcommentedit);
         holder.mCommentButton.setImageResource(R.drawable.comment);
     }
@@ -210,16 +208,15 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
                     if(clicked){
                         mLikeBtn.setImageResource(R.drawable.like);
-                        String postLike = Constants.APIURL+"/media/"+mediaId+"/likes";
-                        new PostLikedMediaAsyncTask().execute(postLike);
-                        Log.i("Hello","I am in FIrst Click event Btn");
+                        String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
+                        new PostLikedMediaAsyncTask().execute(postLikeUrl);
                         clicked = false;
                     }
                     else{
                         mLikeBtn.setImageResource(R.drawable.unlike);
+                        String unLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
+                        new DeleteAsyncTask().execute(unLikeUrl);
                         clicked = true;
-                        String postLike = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
-                        new DeleteAsyncTask().execute(postLike);
                     }
                 }
             });
@@ -232,7 +229,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         TextView textComment = new TextView(mContext);
                         linearLayout.addView(textComment,0);
                         mEditComment.setText(" ");
-                        //TODO FOR COMMENT VALIDATION
+                        //TODO FOR COMMENT VALIDATION BASED ON SERVER REQUIREMENT
                         textComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+Constants.API_USERNAME+":"+"</b>"+ "  " + "<small>"+comment+"</small>"));
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);

@@ -36,10 +36,6 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
             url = new URL(params[0]);
             if(url!=null) {
                 DownloadManager downloadManager = new DownloadManager();
-                /*HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                httpsURLConnection.setRequestMethod("POST");
-                httpsURLConnection.setDoInput(true);
-                httpsURLConnection.setDoOutput(true);*/
                 HttpsURLConnection httpsURLConnection = downloadManager.downloadWithPost(url);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
                 outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN +
@@ -57,8 +53,7 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
         }
         return mResponse;
     }
-
-     //Todo for onPostExecute
+    //Todo for onPostExecute
     @Override
     protected void onPostExecute(String s) {
      Log.i("Hello","Response is"+s);

@@ -2,7 +2,6 @@ package com.robosoft.archana.instagramapplication;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
-import com.robosoft.archana.instagramapplication.Activity.UserProfileActivity;
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.NoOfCommentInterface;
 import com.robosoft.archana.instagramapplication.Interfaces.SendFollwersData;
@@ -125,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements Communicator,Send
                 settingFragment.show(fragmentManager,"Setting");
                 return true;
             case R.id.user_profile:
-                Intent intent = new Intent(this,UserProfileActivity.class);
-                startActivity(intent);
+              /*  Intent intent = new Intent(this,UserProfileActivity.class);
+                startActivity(intent);*/
                 return true;
 
         }

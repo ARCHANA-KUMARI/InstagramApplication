@@ -26,7 +26,7 @@ public class DownloadManager {
     }
 
     public HttpsURLConnection downloadWithPost(URL url) {
-        HttpsURLConnection httpsURLConnection = null;
+         HttpsURLConnection httpsURLConnection = null;
          try {
                 httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("POST");
@@ -35,8 +35,8 @@ public class DownloadManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-        return httpsURLConnection;
+            return httpsURLConnection;
     }
+
 
 }
