@@ -36,7 +36,6 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
         this.mMediaDetailsList = mediaDetailsList;
         this.mUrl = mUrl;
         sendMediaDetails = (SendMediaDetails) mContext;
-
         this.hashMap = hashMap;
     }
 
@@ -54,7 +53,7 @@ public class AsyncTaskGetRecentMedia extends AsyncTask<Void, Void, List<MediaDet
                 try {
                      url = new URL(mUrl.get(i));
                      if (url != null) {
-                        String response = downloadManager.download(url);
+                        String response = downloadManager.downloadWithGet(url);
                         mMediaDetailsList = jsonParser.medeiaUrlParsed(response,mPaginationList,downloadManager,hashMap,mMediaDetailsList);
                      }
                 } catch (MalformedURLException e) {
