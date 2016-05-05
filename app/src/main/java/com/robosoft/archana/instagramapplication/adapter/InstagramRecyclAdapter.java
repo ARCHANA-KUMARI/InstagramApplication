@@ -25,7 +25,7 @@ import com.robosoft.archana.instagramapplication.Modal.UserDetail;
 import com.robosoft.archana.instagramapplication.Network.AsyncTaskPostComment;
 import com.robosoft.archana.instagramapplication.Network.DeleteAsyncTask;
 import com.robosoft.archana.instagramapplication.Network.ImageDownloader;
-import com.robosoft.archana.instagramapplication.Network.LikedMediaAsyncTask;
+import com.robosoft.archana.instagramapplication.Network.PostLikedMediaAsyncTask;
 import com.robosoft.archana.instagramapplication.R;
 
 import java.io.Serializable;
@@ -204,7 +204,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 linearLayout.addView(mTextComment);
                 CommentListTextView.add( mTextComment);
             }
-
             mLikeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -212,7 +211,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                     if(clicked){
                         mLikeBtn.setImageResource(R.drawable.like);
                         String postLike = Constants.APIURL+"/media/"+mediaId+"/likes";
-                        new LikedMediaAsyncTask().execute(postLike);
+                        new PostLikedMediaAsyncTask().execute(postLike);
                         Log.i("Hello","I am in FIrst Click event Btn");
                         clicked = false;
                     }
@@ -222,10 +221,9 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         String postLike = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
                         new DeleteAsyncTask().execute(postLike);
                     }
-
-
                 }
             });
+
             mCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

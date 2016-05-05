@@ -44,7 +44,7 @@ public class UserDetailsAsysncTask extends AsyncTask<Void,Void,List<UserDetail>>
             try {
                 url = new URL(mUserDetailsUrlList.get(i));
                 if (url != null) {
-                    String response = downloadManager.download(url);
+                    String response = downloadManager.downloadWithGet(url);
                     UserDetail userDetail = new UserDetail();
                     JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
                     JSONObject jsonDataObj = jsonObject.getJSONObject("data");

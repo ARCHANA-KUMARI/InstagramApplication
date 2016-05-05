@@ -35,11 +35,12 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
         try {
             url = new URL(params[0]);
             if(url!=null) {
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                DownloadManager downloadManager = new DownloadManager();
+                /*HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("POST");
-               // httpsURLConnection.setRequestMethod("DELETE");
                 httpsURLConnection.setDoInput(true);
-                httpsURLConnection.setDoOutput(true);
+                httpsURLConnection.setDoOutput(true);*/
+                HttpsURLConnection httpsURLConnection = downloadManager.downloadWithPost(url);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
                 outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN +
                         "&text=" + mComments);

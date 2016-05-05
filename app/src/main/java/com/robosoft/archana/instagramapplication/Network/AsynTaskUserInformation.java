@@ -43,7 +43,7 @@ public class AsynTaskUserInformation extends AsyncTask<Void, Void, List<Follower
              URL url = new URL(mUrl);
              if(url!=null) {
                  DownloadManager downloadManager = new DownloadManager();
-                 String response = downloadManager.download(url);
+                 String response = downloadManager.downloadWithGet(url);
                  if(response!=null) {
                     JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
                     JSONArray jsonArray = jsonObject.getJSONArray("data");

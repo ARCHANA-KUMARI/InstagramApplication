@@ -45,7 +45,7 @@ public class JsonParser {
                 String commentUrl = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
                 URL commentUrlAddress = new URL(commentUrl);
                 if(commentUrlAddress!=null){
-                    String commentResponse = downloadManager.download(commentUrlAddress);
+                    String commentResponse = downloadManager.downloadWithGet(commentUrlAddress);
                     arrayList = new ArrayList<>();
                     hashMap = commentUrlParsed(commentResponse,mediaDetails,arrayList,hashMap);
                 }

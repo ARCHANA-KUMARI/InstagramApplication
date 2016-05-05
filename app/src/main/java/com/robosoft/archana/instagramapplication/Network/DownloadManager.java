@@ -13,7 +13,8 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class DownloadManager {
     private String mStringResponse;
-    public String download(URL url){
+
+    public String downloadWithGet(URL url) {
         try {
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             InputStream inputStream = httpsURLConnection.getInputStream();
@@ -23,4 +24,19 @@ public class DownloadManager {
         }
         return mStringResponse;
     }
+
+    public HttpsURLConnection downloadWithPost(URL url) {
+        HttpsURLConnection httpsURLConnection = null;
+         try {
+                httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                httpsURLConnection.setRequestMethod("POST");
+                httpsURLConnection.setDoInput(true);
+                httpsURLConnection.setDoOutput(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        return httpsURLConnection;
+    }
+
 }

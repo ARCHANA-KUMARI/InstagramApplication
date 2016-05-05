@@ -16,7 +16,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by archana on 4/5/16.
  */
-public class LikedMediaAsyncTask extends AsyncTask<String,Void,String> {
+public class PostLikedMediaAsyncTask extends AsyncTask<String,Void,String> {
 
     private String mResponse;
     @Override
@@ -25,10 +25,12 @@ public class LikedMediaAsyncTask extends AsyncTask<String,Void,String> {
         try {
             url = new URL(params[0]);
             if(url!=null) {
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                DownloadManager downloadManager = new DownloadManager();
+               /* HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("POST");
                 httpsURLConnection.setDoInput(true);
-                httpsURLConnection.setDoOutput(true);
+                httpsURLConnection.setDoOutput(true);*/
+                HttpsURLConnection httpsURLConnection = downloadManager.downloadWithPost(url);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
                 outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN);
                 outputStreamWriter.flush();
