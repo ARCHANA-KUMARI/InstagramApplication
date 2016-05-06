@@ -167,7 +167,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         @Override
                         public void onClick(View v) {
                             Log.i("Hello","I am in DeleteCommentBtn Else Part");
-                            Log.i("Hello","I am in DeleteCommentBtn");
+
                         }
                     });
                 }
@@ -229,8 +229,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 mDeleteCommentBtn.setImageResource(R.drawable.delete);
                 mDeleteCommentBtn.setBackgroundColor(mContext.getResources().getColor(R.color.white));
                 mDeleteCommentBtn.setPadding(0, 18, 0, 0);
-//                mDeleteCommentBtn.setMaxHeight(3);
-//                mDeleteCommentBtn.setMaxWidth(5);
                 deleteLinearLayout.addView(mDeleteCommentBtn);
                 deleteCommentImgBtnList.add(mDeleteCommentBtn);
 
@@ -240,18 +238,11 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 public void onClick(View v) {
 
                     if(mediaDetails.ismUser_Has_Liked_Status()==true){
-                        Log.i("Hello","I am in If Method of Like");
                         String unLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
                         new DeleteAsyncTask().execute(unLikeUrl);
-                        // likedStatus = false;
                         mediaDetails.setmUser_Has_Liked_Status(false);
-
-
                     }
                     else{
-                       // mLikeBtn.setImageResource(R.drawable.unlike);
-                        // mLikeBtn.setImageResource(R.drawable.like);
-                        Log.i("Hello","I am in Else Method of Like");
                         String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
                         new PostLikedMediaAsyncTask().execute(postLikeUrl);
                         likedStatus = true;
