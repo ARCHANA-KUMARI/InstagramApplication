@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     private Context mContext;
     private View mOneRow;
     private List<MediaDetails> mMedeiaDetailsList;
-
     private LruCache<String, Bitmap> mLrucache;
     private HashMap<String, ArrayList<CommentDetails>> hashMap;
     private ArrayList<CommentDetails> mTempCommentListValueList;
@@ -53,7 +53,8 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     private LinkedHashMap<String, UserDetail> mUserDetailsListHashMap;
     int noOfComments;
     public static final String USER_DETAILS = "Details";
-
+    int i = 0;
+    private boolean likedStatus;
 
     public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap, LinkedHashMap<String, UserDetail> userDetailsListHashMap) {
 
@@ -80,10 +81,10 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails,mediaDetails.getmMediaId());
             return commentViewHolder;
         } else {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, mTempCommentListValueList.size(), viewType, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, mTempCommentListValueList.size(), viewType,mediaDetails, mediaDetails.getmMediaId());
             return commentViewHolder;
         }
 
@@ -103,6 +104,12 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
         holder.mTextDescription.setText(mediaDetails.getmCaption());
         holder.mTextUserName.setText(mediaDetails.getmUserName());
+        if(mediaDetails.ismUser_Has_Liked_Status()==true){
+            holder.mLikeBtn.setImageResource(R.drawable.like);
+        }
+        else {
+            holder.mLikeBtn.setImageResource(R.drawable.unlike);
+        }
         holder.mTextUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +126,6 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         intent.putExtras(bundle);
                         mContext.startActivity(intent);
                     }
-
                 }
                 }
 
@@ -141,6 +147,13 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
                 CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
                 holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                holder.mDeleteCommentBtn = (ImageButton)holder.deleteCommentImgBtnList.get(i);
+                holder.mDeleteCommentBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i("Hello","I am in DeleteCommentBtn");
+                    }
+                });
             }
         } else {
                 if(mTempCommentListValueList.size()>0){
@@ -149,6 +162,14 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                     CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
                     //holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
                     holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                    holder.mDeleteCommentBtn = (ImageButton)holder.deleteCommentImgBtnList.get(i);
+                    holder.mDeleteCommentBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.i("Hello","I am in DeleteCommentBtn Else Part");
+
+                        }
+                    });
                 }
                 }
         }
@@ -168,21 +189,22 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
-        private boolean clicked = true;
+
         int noOfCommentTextView;
         private ImageView mImage,mImageProfilePic;
         private TextView mTextDescription;
         private EditText mEditComment;
-        private ImageButton mCommentButton,mLikeBtn;
+        private ImageButton mCommentButton,mLikeBtn,mDeleteCommentBtn;
         private TextView mTextComment;
         private TextView mTextUserName;
         private TextView mTextLocation,mTextCreatedTime;
         String mediaId;
-        LinearLayout linearLayout;
+        LinearLayout linearLayout,deleteLinearLayout;
         ArrayList<TextView> CommentListTextView = new ArrayList<>();
+        ArrayList<ImageButton> deleteCommentImgBtnList = new ArrayList<>();
         int position;
 
-        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final String mediaId) {
+        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final MediaDetails mediaDetails, final String mediaId) {
             super(itemView);
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
@@ -192,32 +214,41 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             mTextLocation = (TextView)itemView.findViewById(R.id.location);
             mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.commentlayout);
+            deleteLinearLayout = (LinearLayout)itemView.findViewById(R.id.deletebtn);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
             mTextCreatedTime = (TextView) itemView.findViewById(R.id.createdtime);
+
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
             this.position = position;
             for (int i = 0; i < noOfCommentTextView; i++) {
                 mTextComment = new TextView(mContext);
                 linearLayout.addView(mTextComment);
-                CommentListTextView.add( mTextComment);
+                CommentListTextView.add(mTextComment);
+                mDeleteCommentBtn = new ImageButton(mContext);
+                mDeleteCommentBtn.setImageResource(R.drawable.delete);
+                mDeleteCommentBtn.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                mDeleteCommentBtn.setPadding(0, 18, 0, 0);
+                deleteLinearLayout.addView(mDeleteCommentBtn);
+                deleteCommentImgBtnList.add(mDeleteCommentBtn);
+
             }
             mLikeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if(clicked){
-                        mLikeBtn.setImageResource(R.drawable.like);
-                        String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
-                        new PostLikedMediaAsyncTask().execute(postLikeUrl);
-                        clicked = false;
-                    }
-                    else{
-                        mLikeBtn.setImageResource(R.drawable.unlike);
+                    if(mediaDetails.ismUser_Has_Liked_Status()==true){
                         String unLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
                         new DeleteAsyncTask().execute(unLikeUrl);
-                        clicked = true;
+                        mediaDetails.setmUser_Has_Liked_Status(false);
                     }
+                    else{
+                        String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
+                        new PostLikedMediaAsyncTask().execute(postLikeUrl);
+                        likedStatus = true;
+                        mediaDetails.setmUser_Has_Liked_Status(true);
+                    }
+                    notifyDataSetChanged();
                 }
             });
 
@@ -236,6 +267,8 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                     }
                 }
             });
+
+
 
         }
     }

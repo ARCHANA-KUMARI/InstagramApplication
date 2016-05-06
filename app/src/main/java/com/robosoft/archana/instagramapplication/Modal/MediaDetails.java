@@ -14,6 +14,15 @@ public class MediaDetails implements Serializable{
     public void setmUserName(String mUserName) {
         this.mUserName = mUserName;
     }
+    private boolean mUser_Has_Liked_Status;
+
+    public boolean ismUser_Has_Liked_Status() {
+        return mUser_Has_Liked_Status;
+    }
+
+    public void setmUser_Has_Liked_Status(boolean mUser_Has_Liked_Status) {
+        this.mUser_Has_Liked_Status = mUser_Has_Liked_Status;
+    }
 
     String mCommentsCount,mLikeCounts,mStandardImageResolLink,mCaption,mMediaId,mUserName,mProfilePic,mLocation,mPagenation_nextUrl,mCreatedTime,mUserId;
 
