@@ -1,7 +1,6 @@
 package com.robosoft.archana.instagramapplication.Network;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
@@ -47,6 +46,6 @@ public class PostLikedMediaAsyncTask extends AsyncTask<String,Void,String> {
     //Todo for onPostExecute
     @Override
     protected void onPostExecute(String s) {
-     Log.i("Hello","Response of PostLiked is"+s);
+
     }
 }
