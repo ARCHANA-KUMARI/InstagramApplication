@@ -19,6 +19,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class PostLikedMediaAsyncTask extends AsyncTask<String,Void,String> {
 
     private String mResponse;
+
     @Override
     protected String doInBackground(String... params) {
         URL url = null;
@@ -41,6 +42,7 @@ public class PostLikedMediaAsyncTask extends AsyncTask<String,Void,String> {
         }
         return mResponse;
     }
+
     //Todo for onPostExecute
     @Override
     protected void onPostExecute(String s) {

@@ -41,6 +41,7 @@ public class JsonParser {
 
             if (!jsonSubObject.isNull("id")) {
                 String mediaId = jsonSubObject.getString("id");
+               // Log.i("Hello","Media Id is"+mediaId);
                 mediaDetails.setmMediaId(mediaId);
                 String commentUrl = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
                 URL commentUrlAddress = new URL(commentUrl);
@@ -78,6 +79,7 @@ public class JsonParser {
                 JSONObject captionObject = jsonSubObject.getJSONObject("caption");
                 if (captionObject.has("text")) {
                     String text = captionObject.getString("text");
+                  //  Log.i("Hello","Comment is"+text);
                     mediaDetails.setmCaption(text);
 
                 }
@@ -95,6 +97,12 @@ public class JsonParser {
                 JSONObject locationObject = jsonSubObject.getJSONObject("location");
                 mediaDetails.setmLocation(locationObject.getString("name"));
 
+            }
+            if(jsonSubObject.has("user_has_liked")){
+                if(!jsonSubObject.isNull("user_has_liked")){
+                    mediaDetails.setmUser_Has_Liked_Status(jsonSubObject.getBoolean("user_has_liked"));
+                    Log.i("Hello","User Has LIked Status is"+jsonSubObject.getBoolean("user_has_liked"));
+                }
             }
             mMediaDetailsList.add(mediaDetails);
         }
@@ -122,6 +130,7 @@ public class JsonParser {
                     }
                 }
                 arrayList.add(commentDetails);
+
             }
             hashMap.put(mediaDetails.getmMediaId(), arrayList);
         } catch (JSONException e) {

@@ -27,10 +27,10 @@ public class DeleteAsyncTask extends AsyncTask<String,Void,String> {
             if (url != null) {
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
                 httpsURLConnection.setRequestMethod("DELETE");
-              /*  httpsURLConnection.setDoInput(true);
+               /* httpsURLConnection.setDoInput(true);
                 httpsURLConnection.setDoOutput(true);*/
                 // No need for this
-                /*OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
+              /*  OutputStreamWriter outputStreamWriter = new OutputStreamWriter(httpsURLConnection.getOutputStream());
                 outputStreamWriter.write("&access_token=" + Constants.ACCESSTOKEN);
                 outputStreamWriter.flush();*/
                 mResponse = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
