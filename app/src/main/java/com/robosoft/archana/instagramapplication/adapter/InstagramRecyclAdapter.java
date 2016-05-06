@@ -54,6 +54,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     int noOfComments;
     public static final String USER_DETAILS = "Details";
     int i = 0;
+    private boolean likedStatus;
 
     public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap, LinkedHashMap<String, UserDetail> userDetailsListHashMap) {
 
@@ -80,10 +81,10 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
         if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails,mediaDetails.getmMediaId());
             return commentViewHolder;
         } else {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, mTempCommentListValueList.size(), viewType, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, mTempCommentListValueList.size(), viewType,mediaDetails, mediaDetails.getmMediaId());
             return commentViewHolder;
         }
 
@@ -103,6 +104,12 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
         holder.mTextDescription.setText(mediaDetails.getmCaption());
         holder.mTextUserName.setText(mediaDetails.getmUserName());
+        if(mediaDetails.ismUser_Has_Liked_Status()==true){
+            holder.mLikeBtn.setImageResource(R.drawable.like);
+        }
+        else {
+            holder.mLikeBtn.setImageResource(R.drawable.unlike);
+        }
         holder.mTextUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,7 +189,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     class CommentViewHolder extends RecyclerView.ViewHolder {
 
-        private boolean clicked = true;
+
         int noOfCommentTextView;
         private ImageView mImage,mImageProfilePic;
         private TextView mTextDescription;
@@ -197,7 +204,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         ArrayList<ImageButton> deleteCommentImgBtnList = new ArrayList<>();
         int position;
 
-        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final String mediaId) {
+        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final MediaDetails mediaDetails, final String mediaId) {
             super(itemView);
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
@@ -232,18 +239,25 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 @Override
                 public void onClick(View v) {
 
-                    if(clicked){
-                        mLikeBtn.setImageResource(R.drawable.like);
-                        String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
-                        new PostLikedMediaAsyncTask().execute(postLikeUrl);
-                        clicked = false;
-                    }
-                    else{
-                        mLikeBtn.setImageResource(R.drawable.unlike);
+                    if(mediaDetails.ismUser_Has_Liked_Status()==true){
+                        Log.i("Hello","I am in If Method of Like");
                         String unLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
                         new DeleteAsyncTask().execute(unLikeUrl);
-                        clicked = true;
+                        // likedStatus = false;
+                        mediaDetails.setmUser_Has_Liked_Status(false);
+
+
                     }
+                    else{
+                       // mLikeBtn.setImageResource(R.drawable.unlike);
+                        // mLikeBtn.setImageResource(R.drawable.like);
+                        Log.i("Hello","I am in Else Method of Like");
+                        String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
+                        new PostLikedMediaAsyncTask().execute(postLikeUrl);
+                        likedStatus = true;
+                        mediaDetails.setmUser_Has_Liked_Status(true);
+                    }
+                    notifyDataSetChanged();
                 }
             });
 

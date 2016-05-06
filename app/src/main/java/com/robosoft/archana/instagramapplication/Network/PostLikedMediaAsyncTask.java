@@ -1,6 +1,7 @@
 package com.robosoft.archana.instagramapplication.Network;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Util.InputStreamtoString;
@@ -19,6 +20,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class PostLikedMediaAsyncTask extends AsyncTask<String,Void,String> {
 
     private String mResponse;
+
     @Override
     protected String doInBackground(String... params) {
         URL url = null;
@@ -41,9 +43,10 @@ public class PostLikedMediaAsyncTask extends AsyncTask<String,Void,String> {
         }
         return mResponse;
     }
+
     //Todo for onPostExecute
     @Override
     protected void onPostExecute(String s) {
-
+     Log.i("Hello","Response of PostLiked is"+s);
     }
 }

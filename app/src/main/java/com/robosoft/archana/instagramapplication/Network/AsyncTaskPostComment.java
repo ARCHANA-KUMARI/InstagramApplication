@@ -56,7 +56,7 @@ public class AsyncTaskPostComment extends AsyncTask<String, Void, String> {
     //Todo for onPostExecute
     @Override
     protected void onPostExecute(String s) {
-     Log.i("Hello","Response is"+s);
+     Log.i("Hello","Response "+s);
     }
 }
 
