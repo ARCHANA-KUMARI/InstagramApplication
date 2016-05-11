@@ -21,8 +21,12 @@ public class Constants {
     public static final String aurthUrlString = AUTHURL+"?client_id=" + CLIENT_ID+ "&redirect_uri="+ CALLBACK_URL + "&response_type=code&display=touch&scope=likes+comments+captions+relationships"+"&scope=public_content"+"&scope=follower_list";
     public static final String tokenURLString = TOKENURL +"?client_id="+CLIENT_ID +"&client_secret="+CLIENT_SECRET+"&redirect_uri="+CALLBACK_URL+"&grant_type=authorization_code";
     public static final String API_USERNAME = "mcasantosh";
+    public static final String API_USER_ID = "2972956137";
 
 }
 
 
-//2972956137.289b08f.4518b8e436fd444195fdf1d47745a3c5
+
+
+
+//https://api.instagram.com/v1
