@@ -2,6 +2,7 @@ package com.robosoft.archana.instagramapplication.Network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.robosoft.archana.instagramapplication.Interfaces.Communicator;
 import com.robosoft.archana.instagramapplication.Interfaces.TaskListener;
@@ -62,12 +63,13 @@ public class AsyncTaskAccessToken extends AsyncTask<Void, Void, List<AccessToken
                 String response = InputStreamtoString.readStream(httpsURLConnection.getInputStream());
                 JSONObject jsonObject = (JSONObject) new JSONTokener(response).nextValue();
                 String accessTokenString = jsonObject.getString("access_token"); //Here is your ACCESS TOKEN
+                Log.i("Hello","Access Token is"+accessTokenString);
                 //Create object of AccessToken class
                 AccessToken accessTokenClassObject = new AccessToken();
                 accessTokenClassObject.setmAccessToken(accessTokenString);
                 accessTokenClassObject.setmUserFull_Name(jsonObject.getJSONObject("user").getString("full_name"));
                 accessTokenClassObject.setmUserId(jsonObject.getJSONObject("user").getString("id"));
-                //  Log.i("Hello","User is is"+jsonObject.getJSONObject("user").getString("id"));
+                  Log.i("Hello","User is is"+jsonObject.getJSONObject("user").getString("id"));
                 accessTokenClassObject.setmUserName(jsonObject.getJSONObject("user").getString("username"));
                 accessTokenClassObject.setmProfilePicUrl(jsonObject.getJSONObject("user").getString("profile_picture"));
                 mList.add(accessTokenClassObject);
