@@ -6,7 +6,23 @@ import java.io.Serializable;
  * Created by archana on 27/2/16.
  */
 public class CommentDetails implements Serializable {
-    private String mCommentText,mWhoCommented;
+    public String getmCommetedUserId() {
+        return mWhoCommetedUserId;
+    }
+
+    public void setmCommetedUserId(String mCommetedUserId) {
+        this.mWhoCommetedUserId = mCommetedUserId;
+    }
+
+    private String mCommentText,mWhoCommented,mCommentId,mWhoCommetedUserId;
+
+    public String getmCommentId() {
+        return mCommentId;
+    }
+
+    public void setmCommentId(String mCommentId) {
+        this.mCommentId = mCommentId;
+    }
 
     public String getmCommentText() {
         return mCommentText;

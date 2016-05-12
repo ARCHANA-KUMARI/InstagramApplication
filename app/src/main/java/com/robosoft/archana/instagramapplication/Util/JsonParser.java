@@ -1,7 +1,5 @@
 package com.robosoft.archana.instagramapplication.Util;
 
-import android.util.Log;
-
 import com.robosoft.archana.instagramapplication.Modal.CommentDetails;
 import com.robosoft.archana.instagramapplication.Modal.Constants;
 import com.robosoft.archana.instagramapplication.Modal.MediaDetails;
@@ -31,18 +29,16 @@ public class JsonParser {
         JSONObject jsonPagObj = jsonObject.getJSONObject("pagination");
         if (!jsonPagObj.isNull("next_url")) {
             String next_Url = jsonPagObj.getString("next_url");
-            Log.i("Hello","Next_Url is"+next_Url);
             mPaginationList.add(next_Url);
         }
         JSONArray jsonArray = jsonObject.getJSONArray("data");
         for (int j = 0; j < jsonArray.length(); j++) {
             JSONObject jsonSubObject = jsonArray.getJSONObject(j);
             MediaDetails mediaDetails = new MediaDetails();
-
             if (!jsonSubObject.isNull("id")) {
                 String mediaId = jsonSubObject.getString("id");
-               // Log.i("Hello","Media Id is"+mediaId);
                 mediaDetails.setmMediaId(mediaId);
+                //https://api.instagram.com/v1/media/1241287195349863257_2972956137/comments/?access_token=2972956137.289b08f.4518b8e436fd444195fdf1d47745a3c5
                 String commentUrl = Constants.APIURL + "/media/"+mediaDetails.getmMediaId() +"/comments/?access_token=" + Constants.ACCESSTOKEN;
                 URL commentUrlAddress = new URL(commentUrl);
                 if(commentUrlAddress!=null){
@@ -79,7 +75,6 @@ public class JsonParser {
                 JSONObject captionObject = jsonSubObject.getJSONObject("caption");
                 if (captionObject.has("text")) {
                     String text = captionObject.getString("text");
-                  //  Log.i("Hello","Comment is"+text);
                     mediaDetails.setmCaption(text);
 
                 }
@@ -101,7 +96,6 @@ public class JsonParser {
             if(jsonSubObject.has("user_has_liked")){
                 if(!jsonSubObject.isNull("user_has_liked")){
                     mediaDetails.setmUser_Has_Liked_Status(jsonSubObject.getBoolean("user_has_liked"));
-                    Log.i("Hello","User Has LIked Status is"+jsonSubObject.getBoolean("user_has_liked"));
                 }
             }
             mMediaDetailsList.add(mediaDetails);
@@ -118,15 +112,25 @@ public class JsonParser {
             for (int j = 0; j < jsonArray.length(); j++) {
                 CommentDetails commentDetails = new CommentDetails();
                 JSONObject subObject = jsonArray.getJSONObject(j);
-                if (!subObject.isNull("text")) {
-                    String commentText = subObject.getString("text");
-                    commentDetails.setmCommentText(commentText);
+                if (subObject.has("text")) {
+                    if (!subObject.isNull("text")) {
+                        String commentText = subObject.getString("text");
+                        commentDetails.setmCommentText(commentText);
+                    }
                 }
                 if (subObject.has("from")) {
                     if (!subObject.isNull("from")) {
                         JSONObject fromObject = subObject.getJSONObject("from");
                         String whocommented = fromObject.getString("username");
                         commentDetails.setmWhoCommented(whocommented);
+                        String whocommentedUserId = fromObject.getString("id");
+                        commentDetails.setmCommetedUserId(whocommentedUserId);
+                    }
+                }
+                if (subObject.has("id")) {
+                    if (!subObject.isNull("id")) {
+                        String commentId = subObject.getString("id");
+                        commentDetails.setmCommentId(commentId);
                     }
                 }
                 arrayList.add(commentDetails);

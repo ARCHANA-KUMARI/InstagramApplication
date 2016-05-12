@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,10 +50,9 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
     private ArrayList<String> mMedeiaKeyList = new ArrayList<>();
     private ArrayList<ArrayList<CommentDetails>> mMediaCommentValueList = new ArrayList<>();
     private LinkedHashMap<String, UserDetail> mUserDetailsListHashMap;
+
     int noOfComments;
     public static final String USER_DETAILS = "Details";
-    int i = 0;
-    private boolean likedStatus;
 
     public InstagramRecyclAdapter(LruCache<String, Bitmap> mLrucache, Context mContext, List<MediaDetails> mMedeiaDetailsList, int noOfComments, HashMap<String, ArrayList<CommentDetails>> hashMap, LinkedHashMap<String, UserDetail> userDetailsListHashMap) {
 
@@ -77,49 +75,49 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
 
     @Override
     public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         mOneRow = LayoutInflater.from(mContext).inflate(R.layout.child, parent, false);
         MediaDetails mediaDetails = mMedeiaDetailsList.get(viewType);
         mTempCommentListValueList = mMediaCommentValueList.get(viewType);
-        if (noOfComments > 0 && noOfComments<=mTempCommentListValueList.size()) {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails,mediaDetails.getmMediaId());
+
+        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()) {
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, noOfComments, viewType, mediaDetails, mediaDetails.getmMediaId(), mTempCommentListValueList);
             return commentViewHolder;
         } else {
-            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, mTempCommentListValueList.size(), viewType,mediaDetails, mediaDetails.getmMediaId());
+            CommentViewHolder commentViewHolder = new CommentViewHolder(mOneRow, mTempCommentListValueList.size(), viewType, mediaDetails, mediaDetails.getmMediaId(), mTempCommentListValueList);
             return commentViewHolder;
         }
 
     }
 
     @Override
-    public void onBindViewHolder(CommentViewHolder holder, final int position) {
+    public void onBindViewHolder(final CommentViewHolder holder, final int position) {
         final MediaDetails mediaDetails = mMedeiaDetailsList.get(position);
         Bitmap postedPicBitMap = mLrucache.get(mediaDetails.getmStandardImageResolLink());
-        if(postedPicBitMap!=null){
+        if (postedPicBitMap != null) {
             holder.mImage.setImageBitmap(postedPicBitMap);
-        }
-        else{
+        } else {
             holder.mImageProfilePic.setImageResource(R.drawable.download);
             new ImageDownloader(mLrucache, mediaDetails.getmStandardImageResolLink(), holder.mImage).execute();
         }
 
         holder.mTextDescription.setText(mediaDetails.getmCaption());
         holder.mTextUserName.setText(mediaDetails.getmUserName());
-        if(mediaDetails.ismUser_Has_Liked_Status()==true){
+        if (mediaDetails.ismUser_Has_Liked_Status() == true) {
             holder.mLikeBtn.setImageResource(R.drawable.like);
-        }
-        else {
+        } else {
             holder.mLikeBtn.setImageResource(R.drawable.unlike);
         }
         holder.mTextUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Set keys =mUserDetailsListHashMap.entrySet();
+                Set keys = mUserDetailsListHashMap.entrySet();
                 Iterator<UserDetail> iterator = keys.iterator();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     Map.Entry pairs = (Map.Entry) iterator.next();
                     String keyname = (String) pairs.getKey();
-                    if(mediaDetails.getmUserId().equals(keyname)){
-                        UserDetail userDetail =  mUserDetailsListHashMap.get(keyname);
+                    if (mediaDetails.getmUserId().equals(keyname)) {
+                        UserDetail userDetail = mUserDetailsListHashMap.get(keyname);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(USER_DETAILS, (Serializable) userDetail);
                         Intent intent = new Intent(mContext, UserProfileActivity.class);
@@ -127,7 +125,7 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                         mContext.startActivity(intent);
                     }
                 }
-                }
+            }
 
 
         });
@@ -142,36 +140,22 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
             new ImageDownloader(mLrucache, mediaDetails.getmProfilePic(), holder.mImageProfilePic).execute();
         }
         mTempCommentListValueList = mMediaCommentValueList.get(position);
-        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size()&&mTempCommentListValueList.size()>0) {
+        if (noOfComments > 0 && noOfComments <= mTempCommentListValueList.size() && mTempCommentListValueList.size() > 0) {
             for (int i = 0; i < noOfComments; i++) {
                 holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
-                CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
-                holder.mDeleteCommentBtn = (ImageButton)holder.deleteCommentImgBtnList.get(i);
-                holder.mDeleteCommentBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.i("Hello","I am in DeleteCommentBtn");
-                    }
-                });
+                CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size() - 1) - i);
+                holder.mTextComment.setText(Html.fromHtml("<b><font color =" + R.color.username + ">" + commentDetails.getmWhoCommented() + ":" + "</b>" + "  " + "<small>" + commentDetails.getmCommentText() + "</small>"));
             }
         } else {
-                if(mTempCommentListValueList.size()>0){
+            if (mTempCommentListValueList.size() > 0) {
                 for (int i = 0; i < mTempCommentListValueList.size(); i++) {
-                    holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
-                    CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size()-1)-i);
-                    //holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
-                    holder.mTextComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
-                    holder.mDeleteCommentBtn = (ImageButton)holder.deleteCommentImgBtnList.get(i);
-                    holder.mDeleteCommentBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Log.i("Hello","I am in DeleteCommentBtn Else Part");
 
-                        }
-                    });
+                    holder.mTextComment = (TextView) holder.CommentListTextView.get(i);
+                    CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size() - 1) - i);
+                    //holder.mTextComment.setText(Html.fromHtml("<b><font color =\"#6495ED\">"+commentDetails.getmWhoCommented() +":"+"</b>"+ "  " + "<small>"+commentDetails.getmCommentText()+"</small>"));
+                    holder.mTextComment.setText(Html.fromHtml("<b><font color =" + R.color.username + ">" + commentDetails.getmWhoCommented() + ":" + "</b>" + "  " + "<small>" + commentDetails.getmCommentText() + "</small>"));
                 }
-                }
+            }
         }
         holder.mEditComment.setHint(R.string.addcommentedit);
         holder.mCommentButton.setImageResource(R.drawable.comment);
@@ -182,41 +166,45 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
         return mMedeiaDetailsList.size();
     }
 
-   @Override
+    @Override
     public int getItemViewType(int position) {
         return position;
-   }
+    }
 
-    class CommentViewHolder extends RecyclerView.ViewHolder {
 
+    class CommentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         int noOfCommentTextView;
-        private ImageView mImage,mImageProfilePic;
+        private ImageView mImage, mImageProfilePic;
         private TextView mTextDescription;
         private EditText mEditComment;
-        private ImageButton mCommentButton,mLikeBtn,mDeleteCommentBtn;
+        private ImageButton mCommentButton, mLikeBtn, mDeleteCommentBtn;
         private TextView mTextComment;
         private TextView mTextUserName;
-        private TextView mTextLocation,mTextCreatedTime;
+        private TextView mTextLocation, mTextCreatedTime;
         String mediaId;
-        LinearLayout linearLayout,deleteLinearLayout;
+        LinearLayout linearLayout, deleteLinearLayout;
         ArrayList<TextView> CommentListTextView = new ArrayList<>();
         ArrayList<ImageButton> deleteCommentImgBtnList = new ArrayList<>();
         int position;
+        MediaDetails mediaDetails;
+        ArrayList<CommentDetails> mTempCommentListValueList;
 
-        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final MediaDetails mediaDetails, final String mediaId) {
+        public CommentViewHolder(View itemView, int noOfCommentTextView, final int position, final MediaDetails mediaDetails, final String mediaId, final ArrayList<CommentDetails> mTempCommentListValueList) {
             super(itemView);
             mImage = (ImageView) itemView.findViewById(R.id.image);
             mTextDescription = (TextView) itemView.findViewById(R.id.textdescription);
             mCommentButton = (ImageButton) itemView.findViewById(R.id.commentbtn);
-            mLikeBtn = (ImageButton)itemView.findViewById(R.id.likebtn);
+            mLikeBtn = (ImageButton) itemView.findViewById(R.id.likebtn);
             mTextUserName = (TextView) itemView.findViewById(R.id.username);
-            mTextLocation = (TextView)itemView.findViewById(R.id.location);
-            mImageProfilePic = (ImageView)itemView.findViewById(R.id.profilepic);
+            mTextLocation = (TextView) itemView.findViewById(R.id.location);
+            mImageProfilePic = (ImageView) itemView.findViewById(R.id.profilepic);
             linearLayout = (LinearLayout) itemView.findViewById(R.id.commentlayout);
-            deleteLinearLayout = (LinearLayout)itemView.findViewById(R.id.deletebtn);
+            deleteLinearLayout = (LinearLayout) itemView.findViewById(R.id.deletebtn);
             mEditComment = (EditText) itemView.findViewById(R.id.comment);
             mTextCreatedTime = (TextView) itemView.findViewById(R.id.createdtime);
+            this.mediaDetails = mediaDetails;
+            this.mTempCommentListValueList = mTempCommentListValueList;
 
             this.mediaId = mediaId;
             this.noOfCommentTextView = noOfCommentTextView;
@@ -225,27 +213,30 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 mTextComment = new TextView(mContext);
                 linearLayout.addView(mTextComment);
                 CommentListTextView.add(mTextComment);
-                mDeleteCommentBtn = new ImageButton(mContext);
-                mDeleteCommentBtn.setImageResource(R.drawable.delete);
-                mDeleteCommentBtn.setBackgroundColor(mContext.getResources().getColor(R.color.white));
-                mDeleteCommentBtn.setPadding(0, 18, 0, 0);
-                deleteLinearLayout.addView(mDeleteCommentBtn);
-                deleteCommentImgBtnList.add(mDeleteCommentBtn);
-
+                final CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size() - 1) - i);
+                String splittedMediaId[] = mediaId.split("_");
+                if (splittedMediaId[1].equals(Constants.API_USER_ID) || commentDetails.getmCommetedUserId().equals(Constants.API_USER_ID)) {
+                    mDeleteCommentBtn = new ImageButton(mContext);
+                    mDeleteCommentBtn.setImageResource(R.drawable.delete);
+                    mDeleteCommentBtn.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+                    mDeleteCommentBtn.setPadding(0, 18, 0, 0);
+                    mDeleteCommentBtn.setTag(i);
+                    mDeleteCommentBtn.setOnClickListener(this);
+                    deleteLinearLayout.addView(mDeleteCommentBtn);
+                    deleteCommentImgBtnList.add(mDeleteCommentBtn);
+                }
             }
             mLikeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if(mediaDetails.ismUser_Has_Liked_Status()==true){
-                        String unLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes"+"?access_token="+Constants.ACCESSTOKEN;
+                    if (mediaDetails.ismUser_Has_Liked_Status() == true) {
+                        String unLikeUrl = Constants.APIURL + "/media/" + mediaId + "/likes" + "?access_token=" + Constants.ACCESSTOKEN;
                         new DeleteAsyncTask().execute(unLikeUrl);
                         mediaDetails.setmUser_Has_Liked_Status(false);
-                    }
-                    else{
-                        String postLikeUrl = Constants.APIURL+"/media/"+mediaId+"/likes";
+                    } else {
+                        String postLikeUrl = Constants.APIURL + "/media/" + mediaId + "/likes";
                         new PostLikedMediaAsyncTask().execute(postLikeUrl);
-                        likedStatus = true;
                         mediaDetails.setmUser_Has_Liked_Status(true);
                     }
                     notifyDataSetChanged();
@@ -257,19 +248,41 @@ public class InstagramRecyclAdapter extends RecyclerView.Adapter<InstagramRecycl
                 public void onClick(View v) {
                     String comment = mEditComment.getText().toString();
                     if (!comment.isEmpty()) {
-                        TextView textComment = new TextView(mContext);
-                        linearLayout.addView(textComment,0);
+                        final TextView textComment = new TextView(mContext);
+                        linearLayout.addView(textComment, 0);
                         mEditComment.setText(" ");
                         //TODO FOR COMMENT VALIDATION BASED ON SERVER REQUIREMENT
-                        textComment.setText(Html.fromHtml("<b><font color ="+R.color.username+">"+Constants.API_USERNAME+":"+"</b>"+ "  " + "<small>"+comment+"</small>"));
+                        textComment.setText(Html.fromHtml("<b><font color =" + R.color.username + ">" + Constants.API_USERNAME + ":" + "</b>" + "  " + "<small>" + comment + "</small>"));
                         String postCommentUrl = Constants.APIURL + "/media/" + mediaId + "/comments";
                         new AsyncTaskPostComment(mContext, comment).execute(postCommentUrl);
                     }
                 }
             });
+        }
 
 
-
+        @Override
+        public void onClick(View v) {
+            for (int i = 0; i< deleteCommentImgBtnList.size(); i++) {
+                mDeleteCommentBtn = deleteCommentImgBtnList.get(i);
+                if (mDeleteCommentBtn != null) {
+                    if (mDeleteCommentBtn.getTag() == v.getTag()) {
+                        final CommentDetails commentDetails = mTempCommentListValueList.get((mTempCommentListValueList.size() - 1) - i);
+                        if (commentDetails.getmCommentId() != null) {
+                            String deleteCommentUrl = Constants.APIURL + "/media/" + mediaDetails.getmMediaId() + "/comments/" + commentDetails.getmCommentId() + "?access_token=" + Constants.ACCESSTOKEN;
+                            new DeleteAsyncTask().execute(deleteCommentUrl);
+                            mTextComment = CommentListTextView.get(i);
+                            CommentListTextView.remove(i);
+                            mTempCommentListValueList.remove(commentDetails);
+                            linearLayout.removeViewAt(i);
+                            deleteCommentImgBtnList.remove(i);
+                            deleteLinearLayout.removeViewAt(i);
+                            notifyDataSetChanged();
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
